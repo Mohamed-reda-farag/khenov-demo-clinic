@@ -1,0 +1,108 @@
+{
+  "app": {
+    "name": "Nabd Clinic",
+    "tagline": "Run your clinic calmly and clearly",
+    "documentTitle": "Nabd Clinic · Demo"
+  },
+  "common": {
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "demoBadge": "Demo by KHENOV"
+  },
+  "roles": {
+    "receptionist": "Receptionist",
+    "doctor": "Doctor"
+  },
+  "login": {
+    "title": "Welcome to the demo",
+    "subtitle": "Pick the role you want to try. No sign-up needed.",
+    "receptionistDesc": "Appointments, calendar, patients and every visit's status.",
+    "doctorDesc": "Today's patient queue, visit notes and your schedule.",
+    "continue": "Continue as demo user",
+    "continuing": "Signing in…",
+    "failedTitle": "Could not sign in",
+    "failedDescription": "Something went wrong while starting the demo session. Please try again.",
+    "note": "All data is fictional and stays on your device.",
+    "brandHeadline": "The whole clinic day on one screen",
+    "brandBody": "Book appointments, track arrivals and read simple reports: a complete journey from first login to last visit.",
+    "highlight1": "Weekly calendar with conflict-free booking",
+    "highlight2": "A clear path for every appointment, booking to done",
+    "highlight3": "Daily reports without the complexity"
+  },
+  "nav": {
+    "dashboard": "Today",
+    "calendar": "Calendar",
+    "patients": "Patients",
+    "doctors": "Doctors",
+    "services": "Services",
+    "reports": "Reports",
+    "myDay": "My day",
+    "mySchedule": "My schedule",
+    "settings": "Settings"
+  },
+  "shell": {
+    "skipToContent": "Skip to content",
+    "searchPlaceholder": "Search or type a command…",
+    "switchLanguage": "Switch language",
+    "toggleTheme": "Toggle theme (light / dark)",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "resizeSidebar": "Resize sidebar",
+    "signOut": "Switch role",
+    "demoSession": "Demo session",
+    "mainNav": "Main navigation"
+  },
+  "palette": {
+    "title": "Command palette",
+    "placeholder": "Type a screen or a command…",
+    "noResults": "No matching results",
+    "noResultsHint": "Try another word or clear the search.",
+    "hintNavigate": "Navigate",
+    "hintSelect": "Run",
+    "hintClose": "Close",
+    "switchLanguage": "Switch to العربية",
+    "toggleTheme": "Toggle theme (light / dark)",
+    "resetDemo": "Reset demo",
+    "signOut": "Switch role",
+    "groups": {
+      "navigate": "Go to",
+      "preferences": "Preferences",
+      "demo": "Demo",
+      "session": "Session"
+    }
+  },
+  "dashboard": {
+    "title": "Overview",
+    "stats": {
+      "doctors": "Doctors",
+      "patients": "Patients",
+      "appointmentsToday": "Appointments today"
+    },
+    "errorTitle": "Could not load the data",
+    "errorDescription": "Something went wrong while reading the demo data. Please try again."
+  },
+  "placeholder": {
+    "title": "This screen is still being prepared",
+    "description": "It will be ready soon in the demo."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageDescription": "Change the interface language at any time. Direction switches automatically.",
+    "arabic": "العربية",
+    "english": "English",
+    "theme": "Appearance",
+    "themeDescription": "Light is comfortable on bright screens, dark suits low-light rooms.",
+    "light": "Light",
+    "dark": "Dark",
+    "demoSection": "Demo",
+    "resetTitle": "Reset demo",
+    "resetDescription": "Clears every change you made and restores the original data. Your language and theme stay as they are.",
+    "resetAction": "Reset",
+    "resetConfirmTitle": "Reset all data?",
+    "resetConfirmDescription": "All appointments and edits go back to the original state, and you will be signed out of this session.",
+    "resetConfirmAction": "Yes, reset",
+    "aboutSection": "About",
+    "aboutBody": "Nabd Clinic is a demo by KHENOV. All names, numbers and appointments are fictional, and there is no real server: everything stays on your device."
+  }
+}

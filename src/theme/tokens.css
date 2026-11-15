@@ -1,0 +1,121 @@
+/* Design tokens. Components use ONLY these (through the Tailwind mapping in theme.css). */
+:root {
+  /* surfaces + text */
+  --c-bg: #f3f7f8;
+  --c-surface: #ffffff;
+  --c-surface-2: #eaf1f3;
+  --c-border: #d8e3e6;
+  --c-border-strong: #b7c9ce;
+  --c-text: #11262b;
+  --c-text-muted: #4b646b;
+  --c-text-subtle: #587177;
+  /* brand */
+  --c-primary: #0e7c86;
+  --c-primary-hover: #0a646c;
+  --c-primary-strong: #0a646c;
+  --c-primary-soft: #ddf1f2;
+  --c-on-primary: #ffffff;
+  --c-accent: #2f6fde;
+  --c-accent-soft: #e3ecfc;
+  --c-brand-1: #0b5f68;
+  --c-brand-2: #173f7a;
+  /* feedback */
+  --c-success: #17693f;
+  --c-success-soft: #dcf3e7;
+  --c-warning: #7a4e00;
+  --c-warning-soft: #fcefd0;
+  --c-danger: #a5231a;
+  --c-danger-soft: #fde4e1;
+  --c-on-danger: #ffffff;
+  --c-focus: #2f6fde;
+  --c-overlay: rgb(8 24 28 / 0.5);
+  /* appointment status */
+  --c-status-pending: var(--c-warning);
+  --c-status-pending-soft: var(--c-warning-soft);
+  --c-status-confirmed: var(--c-accent);
+  --c-status-confirmed-soft: var(--c-accent-soft);
+  --c-status-arrived: var(--c-primary-strong);
+  --c-status-arrived-soft: var(--c-primary-soft);
+  --c-status-done: var(--c-success);
+  --c-status-done-soft: var(--c-success-soft);
+  --c-status-cancelled: var(--c-danger);
+  --c-status-cancelled-soft: var(--c-danger-soft);
+  /* doctors (calendar / charts) */
+  --c-doctor-1: #0e7c86;
+  --c-doctor-2: #6b4fd8;
+  --c-doctor-3: #b5620f;
+  --c-doctor-4: #c2385f;
+  /* shadows */
+  --sh-sm: 0 1px 2px rgb(16 42 48 / 0.06);
+  --sh-md: 0 4px 12px rgb(16 42 48 / 0.08);
+  --sh-lg: 0 16px 40px rgb(16 42 48 / 0.16);
+}
+
+[data-theme='dark'] {
+  --c-bg: #0b1518;
+  --c-surface: #112126;
+  --c-surface-2: #172c32;
+  --c-border: #243c43;
+  --c-border-strong: #35535b;
+  --c-text: #e6f1f3;
+  --c-text-muted: #9db4ba;
+  --c-text-subtle: #86a0a7;
+  --c-primary: #43c3cd;
+  --c-primary-hover: #66d3db;
+  --c-primary-strong: #7fdde4;
+  --c-primary-soft: #12393e;
+  --c-on-primary: #052a2e;
+  --c-accent: #7aa7ff;
+  --c-accent-soft: #1b2c52;
+  --c-success: #5bd39a;
+  --c-success-soft: #123626;
+  --c-warning: #f2b84b;
+  --c-warning-soft: #3a2b0a;
+  --c-danger: #ff8a7f;
+  --c-danger-soft: #3e1b18;
+  --c-on-danger: #3a0f0b;
+  --c-focus: #7aa7ff;
+  --c-overlay: rgb(0 0 0 / 0.62);
+  --c-doctor-1: #43c3cd;
+  --c-doctor-2: #a493ff;
+  --c-doctor-3: #f0a35c;
+  --c-doctor-4: #f58aa8;
+  --sh-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --sh-md: 0 4px 12px rgb(0 0 0 / 0.4);
+  --sh-lg: 0 16px 40px rgb(0 0 0 / 0.55);
+}
+
+:root {
+  /* typography */
+  --font-family: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+  --fs-xs: 0.75rem;
+  --lh-xs: 1.125rem;
+  --fs-sm: 0.875rem;
+  --lh-sm: 1.5rem;
+  --fs-base: 1rem;
+  --lh-base: 1.625rem;
+  --fs-lg: 1.125rem;
+  --lh-lg: 1.75rem;
+  --fs-xl: 1.375rem;
+  --lh-xl: 2rem;
+  --fs-2xl: 1.75rem;
+  --lh-2xl: 2.5rem;
+  --fs-3xl: 2.25rem;
+  --lh-3xl: 3.25rem;
+  /* radius */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  /* spacing: 8pt grid. --space-n = n * 8px. Tailwind spacing (4px step) is used with even steps. */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  /* motion */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

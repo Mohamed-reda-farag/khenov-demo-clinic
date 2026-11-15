@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './motion.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-canvas: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-sunken: var(--c-surface-2);
+  --color-line: var(--c-border);
+  --color-line-strong: var(--c-border-strong);
+  --color-fg: var(--c-text);
+  --color-muted: var(--c-text-muted);
+  --color-subtle: var(--c-text-subtle);
+  --color-primary: var(--c-primary);
+  --color-primary-hover: var(--c-primary-hover);
+  --color-primary-strong: var(--c-primary-strong);
+  --color-primary-soft: var(--c-primary-soft);
+  --color-on-primary: var(--c-on-primary);
+  --color-accent: var(--c-accent);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-success: var(--c-success);
+  --color-success-soft: var(--c-success-soft);
+  --color-warning: var(--c-warning);
+  --color-warning-soft: var(--c-warning-soft);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-on-danger: var(--c-on-danger);
+  --color-focus: var(--c-focus);
+  --color-status-pending: var(--c-status-pending);
+  --color-status-pending-soft: var(--c-status-pending-soft);
+  --color-status-confirmed: var(--c-status-confirmed);
+  --color-status-confirmed-soft: var(--c-status-confirmed-soft);
+  --color-status-arrived: var(--c-status-arrived);
+  --color-status-arrived-soft: var(--c-status-arrived-soft);
+  --color-status-done: var(--c-status-done);
+  --color-status-done-soft: var(--c-status-done-soft);
+  --color-status-cancelled: var(--c-status-cancelled);
+  --color-status-cancelled-soft: var(--c-status-cancelled-soft);
+  --color-doctor-1: var(--c-doctor-1);
+  --color-doctor-2: var(--c-doctor-2);
+  --color-doctor-3: var(--c-doctor-3);
+  --color-doctor-4: var(--c-doctor-4);
+
+  --font-sans: var(--font-family);
+
+  --radius-*: initial;
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+
+  --text-*: initial;
+  --text-xs: var(--fs-xs);
+  --text-xs--line-height: var(--lh-xs);
+  --text-sm: var(--fs-sm);
+  --text-sm--line-height: var(--lh-sm);
+  --text-base: var(--fs-base);
+  --text-base--line-height: var(--lh-base);
+  --text-lg: var(--fs-lg);
+  --text-lg--line-height: var(--lh-lg);
+  --text-xl: var(--fs-xl);
+  --text-xl--line-height: var(--lh-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-2xl--line-height: var(--lh-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-3xl--line-height: var(--lh-3xl);
+
+  --shadow-*: initial;
+  --shadow-sm: var(--sh-sm);
+  --shadow-md: var(--sh-md);
+  --shadow-lg: var(--sh-lg);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-family);
+    background: var(--c-bg);
+    color: var(--c-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+  }
+  :focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 2px;
+  }
+  button,
+  [role='button'],
+  label[for],
+  select {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  ::selection {
+    background: var(--c-primary-soft);
+    color: var(--c-primary-strong);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .press {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .press:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  .anim-fade-in {
+    animation: fade-in var(--dur-base) var(--ease-out) both;
+  }
+  .anim-rise-in {
+    animation: rise-in var(--dur-slow) var(--ease-out) both;
+  }
+  .spinner {
+    animation: spin 700ms linear infinite;
+  }
+  .skeleton {
+    background: var(--c-surface-2);
+    animation: pulse-soft 1.4s ease-in-out infinite;
+  }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: var(--c-overlay);
+  }
+  .overlay[data-state='open'] {
+    animation: fade-in var(--dur-base) var(--ease-out);
+  }
+  .overlay[data-state='closed'] {
+    animation: fade-out var(--dur-fast) var(--ease-out);
+  }
+  .panel[data-state='open'] {
+    animation: pop-in var(--dur-base) var(--ease-out);
+  }
+  .panel[data-state='closed'] {
+    animation: pop-out var(--dur-fast) var(--ease-out);
+  }
+  .tooltip {
+    z-index: 60;
+    animation: fade-in var(--dur-fast) var(--ease-out);
+  }
+  .brand-panel {
+    background:
+      radial-gradient(circle at 12% 8%, rgb(255 255 255 / 0.14), transparent 42%),
+      radial-gradient(circle at 90% 92%, rgb(255 255 255 / 0.1), transparent 46%),
+      linear-gradient(155deg, var(--c-brand-1), var(--c-brand-2));
+  }
+}
