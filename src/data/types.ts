@@ -23,7 +23,8 @@ export interface Patient {
   id: string;
   name: Bilingual;
   phone: string;
-  age: number;
+  /** `null` for patients added with the quick-add form. */
+  age: number | null;
 }
 
 export interface Service {
@@ -47,6 +48,8 @@ export interface Appointment {
   status: AppointmentStatus;
   /** Short non-medical visit note written by the doctor. */
   visitNote: string | null;
+  /** Optional reason typed when the appointment is cancelled. */
+  cancelReason: string | null;
 }
 
 export interface Session {

@@ -1,7 +1,7 @@
 export const DEMO_PREFIX = 'khenov-demo';
 export const APP_ID = 'clinic';
 /** Bump to force every visitor's local data to be re-seeded. */
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 2;
 
 export const NAMESPACE = `${DEMO_PREFIX}:${APP_ID}:v${SEED_VERSION}`;
 export const STALE_NAMESPACE_PREFIX = `${DEMO_PREFIX}:${APP_ID}:v`;

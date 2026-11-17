@@ -17,7 +17,7 @@ export default tseslint.config(
     languageOptions: { globals: globals.browser },
   },
   {
-    files: ['electron/**/*.ts', '*.config.ts'],
+    files: ['electron/**/*.ts', '*.config.{ts,mts}'],
     languageOptions: { globals: globals.node },
   },
   { files: ['scripts/**/*.mjs'], languageOptions: { globals: globals.node } },

@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { createHashRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { LoginScreen } from '@/features/auth/LoginScreen';
+import { CalendarScreen } from '@/features/calendar/CalendarScreen';
 import { DashboardScreen } from '@/features/dashboard/DashboardScreen';
 import { SettingsScreen } from '@/features/settings/SettingsScreen';
 import { AppShell } from '@/features/shell/AppShell';
@@ -10,6 +11,7 @@ import { LoginGate, RequireRole, RequireSession, RoleHome } from './guards';
 
 const SCREENS: Partial<Record<NavId, ReactElement>> = {
   dashboard: <DashboardScreen />,
+  calendar: <CalendarScreen />,
   settings: <SettingsScreen />,
 };
 

@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
+import { ToastViewport } from '@/components/ui/ToastViewport';
+import { AppointmentDialogs } from '@/features/appointments/AppointmentDialogs';
+import { useReloadData } from '@/features/appointments/useDataStatus';
+import { useToastStore } from '@/stores/toastStore';
 import { usePaletteStore } from '@/stores/paletteStore';
 import { usePrefsStore } from '@/stores/prefsStore';
 import { useSessionStore } from '@/stores/sessionStore';
@@ -16,6 +20,11 @@ export function AppShell() {
   const width = usePrefsStore((state) => state.sidebarWidth);
   const togglePalette = usePaletteStore((state) => state.toggle);
   const mainRef = useRef<HTMLElement>(null);
+  const reloadData = useReloadData();
+
+  useEffect(() => {
+    reloadData();
+  }, [reloadData]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -23,6 +32,13 @@ export function AppShell() {
       if ((event.ctrlKey || event.metaKey) && event.code === 'KeyK') {
         event.preventDefault();
         togglePalette();
+        return;
+      }
+      // Ctrl/Cmd+Z undoes the last change (the toast's Undo), unless the user is typing.
+      const target = event.target as HTMLElement;
+      const typing = target.closest('input, textarea, select, [contenteditable="true"]') !== null;
+      if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ' && !event.shiftKey && !typing) {
+        if (useToastStore.getState().runLastAction()) event.preventDefault();
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -55,6 +71,8 @@ export function AppShell() {
         </main>
       </div>
       <CommandPalette role={session.role} />
+      <AppointmentDialogs />
+      <ToastViewport />
     </div>
   );
 }

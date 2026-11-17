@@ -1,5 +1,6 @@
 /* Design tokens. Components use ONLY these (through the Tailwind mapping in theme.css). */
 :root {
+  color-scheme: light;
   /* surfaces + text */
   --c-bg: #f3f7f8;
   --c-surface: #ffffff;
@@ -32,7 +33,7 @@
   /* appointment status */
   --c-status-pending: var(--c-warning);
   --c-status-pending-soft: var(--c-warning-soft);
-  --c-status-confirmed: var(--c-accent);
+  --c-status-confirmed: #2057b8;
   --c-status-confirmed-soft: var(--c-accent-soft);
   --c-status-arrived: var(--c-primary-strong);
   --c-status-arrived-soft: var(--c-primary-soft);
@@ -52,6 +53,8 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
+  --c-status-confirmed: var(--c-accent);
   --c-bg: #0b1518;
   --c-surface: #112126;
   --c-surface-2: #172c32;

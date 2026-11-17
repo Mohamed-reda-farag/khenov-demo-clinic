@@ -7,7 +7,8 @@
   "common": {
     "retry": "إعادة المحاولة",
     "cancel": "إلغاء",
-    "demoBadge": "عرض تجريبي من KHENOV"
+    "demoBadge": "عرض تجريبي من KHENOV",
+    "close": "إغلاق"
   },
   "roles": {
     "receptionist": "موظف الاستقبال",
@@ -65,18 +66,35 @@
     "resetDemo": "إعادة ضبط العرض التجريبي",
     "signOut": "تبديل الدور",
     "groups": {
-      "navigate": "الانتقال إلى",
-      "preferences": "التفضيلات",
-      "demo": "العرض التجريبي",
-      "session": "الجلسة"
-    }
+      "actions": "إجراءات"
+    },
+    "newAppointment": "حجز موعد جديد"
   },
   "dashboard": {
-    "title": "نظرة عامة",
+    "title": "لوحة اليوم",
     "stats": {
-      "doctors": "الأطباء",
-      "patients": "المرضى",
-      "appointmentsToday": "مواعيد اليوم"
+      "total": "إجمالي مواعيد اليوم",
+      "totalDone": "منها {{count}} تمّت",
+      "confirmed": "مؤكدة",
+      "arrived": "وصلوا",
+      "pending": "في الانتظار",
+      "cancelled": "ملغية"
+    },
+    "actions": {
+      "newAppointment": "موعد جديد",
+      "openCalendar": "فتح التقويم"
+    },
+    "upcoming": {
+      "title": "المواعيد القادمة",
+      "subtitle": "اللي لسه ما خلصتش النهارده",
+      "emptyTitle": "مفيش مواعيد قادمة النهارده",
+      "emptyDescription": "كل مواعيد اليوم خلصت أو اتلغت. تقدر تحجز موعد جديد."
+    },
+    "load": {
+      "title": "حمل الأطباء النهارده",
+      "appointments": "مواعيد",
+      "booked": "{{booked}} من {{total}}",
+      "empty": "مفيش مواعيد النهارده"
     },
     "errorTitle": "تعذّر تحميل البيانات",
     "errorDescription": "حصلت مشكلة أثناء قراءة البيانات التجريبية. جرّب مرة أخرى."
@@ -95,7 +113,6 @@
     "themeDescription": "المظهر الفاتح مريح للشاشات المضيئة، والداكن مناسب للإضاءة المنخفضة.",
     "light": "فاتح",
     "dark": "داكن",
-    "demoSection": "العرض التجريبي",
     "resetTitle": "إعادة ضبط العرض التجريبي",
     "resetDescription": "بيمسح كل التعديلات اللي عملتها ويرجّع البيانات الأصلية. لغتك ومظهرك بيفضلوا زي ما هم.",
     "resetAction": "إعادة الضبط",
@@ -104,5 +121,126 @@
     "resetConfirmAction": "نعم، أعد الضبط",
     "aboutSection": "عن العرض",
     "aboutBody": "نبض كلينك عرض تجريبي من KHENOV. كل الأسماء والأرقام والمواعيد خيالية، ومفيش خادم حقيقي — كل شيء محفوظ على جهازك فقط."
+  },
+  "appointment": {
+    "status": {
+      "pending": "في الانتظار",
+      "confirmed": "مؤكد",
+      "arrived": "وصل",
+      "done": "تمّ",
+      "cancelled": "ملغي"
+    },
+    "actions": {
+      "confirmed": "تأكيد الموعد",
+      "arrived": "تسجيل الحضور",
+      "done": "إنهاء الزيارة",
+      "cancel": "إلغاء الموعد",
+      "edit": "تعديل أو إعادة جدولة",
+      "delete": "حذف الموعد"
+    },
+    "panel": {
+      "flow": "مسار الموعد",
+      "when": "الميعاد",
+      "duration": "المدة",
+      "doctor": "الدكتور",
+      "price": "السعر",
+      "phone": "الموبايل",
+      "cancelledReason": "سبب الإلغاء: {{reason}}",
+      "finished": "الموعد ده خلص ومفيش خطوات تانية.",
+      "missingTitle": "الموعد مش موجود",
+      "missingDescription": "الموعد ده اتحذف أو اتغيّر."
+    },
+    "cancel": {
+      "reasonLabel": "سبب الإلغاء (اختياري)",
+      "reasonPlaceholder": "مثلاً: المريض اتصل وأجّل",
+      "confirm": "تأكيد الإلغاء",
+      "back": "تراجع"
+    },
+    "delete": {
+      "title": "حذف الموعد؟",
+      "description": "هيتحذف موعد {{patient}} الساعة {{time}}. تقدر تتراجع بعدها مباشرة.",
+      "confirm": "حذف"
+    }
+  },
+  "form": {
+    "titleNew": "حجز موعد جديد",
+    "titleEdit": "تعديل الموعد",
+    "descriptionNew": "اختار المريض والوقت وكمّل بضغطة واحدة.",
+    "descriptionEdit": "غيّر أي حاجة، أو انقل الموعد لوقت أو دكتور تاني.",
+    "patient": "المريض",
+    "patientSearch": "ابحث بالاسم أو رقم الموبايل",
+    "patientChange": "تغيير المريض",
+    "patientNoResults": "مفيش مريض بالاسم أو الرقم ده",
+    "quickAdd": "إضافة مريض جديد",
+    "quickAddFor": "إضافة «{{query}}» كمريض جديد",
+    "quickAddName": "الاسم",
+    "quickAddPhone": "رقم الموبايل",
+    "quickAddSave": "حفظ واختيار المريض",
+    "quickAddCancel": "إلغاء الإضافة",
+    "nameRequired": "اكتب اسم المريض (حرفين على الأقل).",
+    "phoneInvalid": "اكتب رقم موبايل مصري صحيح: 11 رقم يبدأ بـ 010 أو 011 أو 012 أو 015.",
+    "phoneDuplicate": "الرقم ده مسجّل لمريض تاني.",
+    "quickAddFailed": "تعذّرت إضافة المريض. جرّب مرة أخرى.",
+    "doctor": "الدكتور",
+    "service": "الخدمة",
+    "date": "التاريخ",
+    "availableSlots": "المواعيد المتاحة",
+    "noSlotsTitle": "مفيش مواعيد فاضية",
+    "noSlotsDescription": "الدكتور محجوز بالكامل في اليوم ده. جرّب يوم تاني أو دكتور تاني.",
+    "submitNew": "حجز الموعد",
+    "submitEdit": "حفظ التعديلات",
+    "cancel": "إلغاء",
+    "needPatient": "اختار المريض الأول.",
+    "needTime": "اختار وقت متاح عشان تكمّل.",
+    "fixConflict": "الوقت ده فيه تعارض: اختار وقت تاني.",
+    "summaryDuration": "المدة: {{duration}}",
+    "summaryPrice": "السعر: {{price}}",
+    "suggestions": "أقرب مواعيد فاضية",
+    "conflict": {
+      "doctor_overlap": "{{doctor}} عنده موعد تاني من {{from}} إلى {{to}}.",
+      "patient_overlap": "{{patient}} عنده موعد تاني من {{from}} إلى {{to}}.",
+      "outside_hours": "الوقت ده خارج ساعات عمل {{doctor}} ({{from}} – {{to}})."
+    }
+  },
+  "calendar": {
+    "title": "التقويم",
+    "today": "النهارده",
+    "prevWeek": "الأسبوع اللي فات",
+    "nextWeek": "الأسبوع الجاي",
+    "prevDay": "اليوم اللي فات",
+    "nextDay": "اليوم الجاي",
+    "viewDay": "يوم",
+    "viewWeek": "أسبوع",
+    "view": "طريقة العرض",
+    "doctorFilter": "الدكتور",
+    "allDoctors": "كل الأطباء",
+    "newAppointment": "موعد جديد",
+    "emptyTitle": "مفيش مواعيد في الفترة دي",
+    "emptyDescription": "اضغط على أي خانة فاضية في التقويم أو ابدأ بحجز موعد جديد.",
+    "errorTitle": "تعذّر تحميل التقويم",
+    "errorDescription": "حصلت مشكلة أثناء قراءة المواعيد. جرّب مرة أخرى.",
+    "gridLabel": "جدول المواعيد",
+    "moveHint": "اسحب الموعد لنقله، أو افتحه واختار «تعديل أو إعادة جدولة».",
+    "blocked": "ما ينفعش ننقل الموعد هنا: {{reason}}",
+    "blockLabel": "{{patient}}، {{service}}، {{doctor}}، {{time}}، {{status}}"
+  },
+  "toast": {
+    "undo": "تراجع",
+    "undone": "تم التراجع.",
+    "dismiss": "إغلاق التنبيه",
+    "region": "تنبيهات",
+    "failed": "تعذّر تنفيذ العملية. جرّب مرة أخرى.",
+    "notFound": "الموعد أو المريض مش موجود.",
+    "conflict": "ما ينفعش: {{reason}}",
+    "booked": "تم حجز موعد {{patient}} {{when}}.",
+    "rescheduled": "تم نقل موعد {{patient}} إلى {{when}}.",
+    "updated": "تم تعديل موعد {{patient}}.",
+    "deleted": "تم حذف موعد {{patient}}.",
+    "status": {
+      "confirmed": "تم تأكيد موعد {{patient}}.",
+      "arrived": "تم تسجيل حضور {{patient}}.",
+      "done": "تم إنهاء زيارة {{patient}}.",
+      "cancelled": "تم إلغاء موعد {{patient}}."
+    }
   }
 }

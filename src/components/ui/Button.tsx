@@ -11,6 +11,14 @@ const VARIANTS: Record<Variant, string> = {
   danger: 'bg-danger text-on-danger hover:opacity-90',
 };
 
+export function buttonStyles(variant: Variant = 'primary', fullWidth = false): string {
+  return cn(
+    'press inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold select-none disabled:opacity-50',
+    VARIANTS[variant],
+    fullWidth && 'w-full',
+  );
+}
+
 interface ButtonProps extends ComponentProps<'button'> {
   variant?: Variant;
   loading?: boolean;
@@ -32,12 +40,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={cn(
-        'press inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold select-none disabled:opacity-50',
-        VARIANTS[variant],
-        fullWidth && 'w-full',
-        className,
-      )}
+      className={cn(buttonStyles(variant, fullWidth), className)}
       {...rest}
     >
       {loading && <Loader2 className="spinner size-4" aria-hidden />}

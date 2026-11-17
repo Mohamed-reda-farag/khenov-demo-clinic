@@ -165,4 +165,30 @@
       radial-gradient(circle at 90% 92%, rgb(255 255 255 / 0.1), transparent 46%),
       linear-gradient(155deg, var(--c-brand-1), var(--c-brand-2));
   }
+  .sheet {
+    --sheet-shift: 24px;
+  }
+  [dir='rtl'] .sheet {
+    --sheet-shift: -24px;
+  }
+  .sheet[data-state='open'] {
+    animation: sheet-in var(--dur-slow) var(--ease-out);
+  }
+  .sheet[data-state='closed'] {
+    animation: sheet-out var(--dur-fast) var(--ease-out);
+  }
+  .toast {
+    animation: toast-in var(--dur-base) var(--ease-out);
+  }
+  .calendar-lines {
+    background-image:
+      linear-gradient(to bottom, var(--c-border) 0, var(--c-border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--c-surface-2) 0, var(--c-surface-2) 1px, transparent 1px);
+    background-size:
+      100% var(--hour-h),
+      100% calc(var(--hour-h) / 4);
+  }
+  .drag-ghost {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
 }

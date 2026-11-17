@@ -1,5 +1,6 @@
-import { addDays, addMinutes, startOfDay } from 'date-fns';
+import { addDays, startOfDay } from 'date-fns';
 import type { Appointment, AppointmentStatus } from '@/data/types';
+import { atMinutes } from '@/lib/scheduling/time';
 import { doctors } from './doctors';
 import { KIDS_COUNT, patients } from './patients';
 import { services } from './services';
@@ -45,14 +46,15 @@ export function buildAppointments(today: Date): Appointment[] {
       const service = options[(k + dayIndex) % options.length]!;
       const pool = doctor.specialtyKey === 'pediatrics' ? kids : adults;
       const patient = pool[(k * 5 + dayIndex * 3) % pool.length]!;
-      const slot = (k * 3 + dayIndex) % 14;
+      const slot = (k * 3 + dayIndex) % 22;
       items.push({
         patientId: patient.id,
         doctorId: doctor.id,
         serviceId: service.id,
-        start: addMinutes(day, 9 * 60 + slot * 30).toISOString(),
+        start: atMinutes(day, 9 * 60 + slot * 30).toISOString(),
         durationMin: service.durationMin,
         visitNote: null,
+        cancelReason: null,
       });
     }
 

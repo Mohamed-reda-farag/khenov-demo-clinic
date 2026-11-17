@@ -5,19 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Kbd } from '@/components/ui/Kbd';
 import type { Role } from '@/data/types';
 import { cn } from '@/lib/cn';
+import { normalizeSearch as normalize } from '@/lib/text';
 import { usePaletteStore } from '@/stores/paletteStore';
 import { COMMAND_GROUPS, useCommands, type Command } from './useCommands';
-
-/** Lowercase + strip Arabic diacritics and unify common letter variants for forgiving search. */
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
-    .replace(/[أإآ]/g, 'ا')
-    .replace(/ى/g, 'ي')
-    .replace(/ة/g, 'ه')
-    .trim();
-}
 
 function PaletteBody({ role, onClose }: { role: Role; onClose: () => void }) {
   const { t } = useTranslation();

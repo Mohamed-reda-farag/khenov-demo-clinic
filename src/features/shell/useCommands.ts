@@ -1,14 +1,21 @@
-import { Languages, LogOut, RotateCcw, SunMoon, type LucideIcon } from 'lucide-react';
+import { CalendarPlus, Languages, LogOut, RotateCcw, SunMoon, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { Role } from '@/data/types';
 import { useResetDemo } from '@/features/demo/useResetDemo';
 import { usePrefsStore } from '@/stores/prefsStore';
 import { useSessionStore } from '@/stores/sessionStore';
+import { useUiStore } from '@/stores/uiStore';
 import { navFor } from './nav';
 
-export type CommandGroup = 'navigate' | 'preferences' | 'demo' | 'session';
-export const COMMAND_GROUPS: CommandGroup[] = ['navigate', 'preferences', 'demo', 'session'];
+export type CommandGroup = 'actions' | 'navigate' | 'preferences' | 'demo' | 'session';
+export const COMMAND_GROUPS: CommandGroup[] = [
+  'actions',
+  'navigate',
+  'preferences',
+  'demo',
+  'session',
+];
 
 export interface Command {
   id: string;
@@ -29,6 +36,7 @@ export function useCommands(role: Role): Command[] {
   const setTheme = usePrefsStore((state) => state.setTheme);
   const logout = useSessionStore((state) => state.logout);
   const resetDemo = useResetDemo();
+  const openForm = useUiStore((state) => state.openForm);
 
   const tAr = i18n.getFixedT('ar');
   const tEn = i18n.getFixedT('en');
@@ -43,7 +51,22 @@ export function useCommands(role: Role): Command[] {
     run: () => void navigate(item.path),
   }));
 
+  const actions: Command[] =
+    role === 'receptionist'
+      ? [
+          {
+            id: 'new-appointment',
+            group: 'actions',
+            label: t('palette.newAppointment'),
+            keywords: `${bothLanguages('palette.newAppointment')} book حجز`,
+            icon: CalendarPlus,
+            run: () => openForm({ mode: 'create' }),
+          },
+        ]
+      : [];
+
   return [
+    ...actions,
     ...navigation,
     {
       id: 'switch-language',

@@ -8,7 +8,7 @@ export const doctors: Doctor[] = [
     specialty: { ar: 'الباطنة', en: 'Internal Medicine' },
     colorToken: 'doctor-1',
     workStart: '09:00',
-    workEnd: '17:00',
+    workEnd: '21:00',
   },
   {
     id: 'dr-2',
@@ -17,7 +17,7 @@ export const doctors: Doctor[] = [
     specialty: { ar: 'طب الأطفال', en: 'Pediatrics' },
     colorToken: 'doctor-2',
     workStart: '09:00',
-    workEnd: '17:00',
+    workEnd: '21:00',
   },
   {
     id: 'dr-3',
@@ -26,7 +26,7 @@ export const doctors: Doctor[] = [
     specialty: { ar: 'طب الأسنان', en: 'Dentistry' },
     colorToken: 'doctor-3',
     workStart: '09:00',
-    workEnd: '17:00',
+    workEnd: '21:00',
   },
   {
     id: 'dr-4',
@@ -35,6 +35,6 @@ export const doctors: Doctor[] = [
     specialty: { ar: 'الأمراض الجلدية', en: 'Dermatology' },
     colorToken: 'doctor-4',
     workStart: '09:00',
-    workEnd: '17:00',
+    workEnd: '21:00',
   },
 ];

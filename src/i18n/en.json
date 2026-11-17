@@ -7,7 +7,8 @@
   "common": {
     "retry": "Try again",
     "cancel": "Cancel",
-    "demoBadge": "Demo by KHENOV"
+    "demoBadge": "Demo by KHENOV",
+    "close": "Close"
   },
   "roles": {
     "receptionist": "Receptionist",
@@ -65,18 +66,35 @@
     "resetDemo": "Reset demo",
     "signOut": "Switch role",
     "groups": {
-      "navigate": "Go to",
-      "preferences": "Preferences",
-      "demo": "Demo",
-      "session": "Session"
-    }
+      "actions": "Actions"
+    },
+    "newAppointment": "New appointment"
   },
   "dashboard": {
-    "title": "Overview",
+    "title": "Today",
     "stats": {
-      "doctors": "Doctors",
-      "patients": "Patients",
-      "appointmentsToday": "Appointments today"
+      "total": "Appointments today",
+      "totalDone": "{{count}} completed",
+      "confirmed": "Confirmed",
+      "arrived": "Arrived",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "newAppointment": "New appointment",
+      "openCalendar": "Open calendar"
+    },
+    "upcoming": {
+      "title": "Next appointments",
+      "subtitle": "Still to be seen today",
+      "emptyTitle": "No upcoming appointments today",
+      "emptyDescription": "Every appointment today is done or cancelled. You can book a new one."
+    },
+    "load": {
+      "title": "Doctor load today",
+      "appointments": "appointments",
+      "booked": "{{booked}} of {{total}}",
+      "empty": "No appointments today"
     },
     "errorTitle": "Could not load the data",
     "errorDescription": "Something went wrong while reading the demo data. Please try again."
@@ -95,7 +113,6 @@
     "themeDescription": "Light is comfortable on bright screens, dark suits low-light rooms.",
     "light": "Light",
     "dark": "Dark",
-    "demoSection": "Demo",
     "resetTitle": "Reset demo",
     "resetDescription": "Clears every change you made and restores the original data. Your language and theme stay as they are.",
     "resetAction": "Reset",
@@ -104,5 +121,126 @@
     "resetConfirmAction": "Yes, reset",
     "aboutSection": "About",
     "aboutBody": "Nabd Clinic is a demo by KHENOV. All names, numbers and appointments are fictional, and there is no real server: everything stays on your device."
+  },
+  "appointment": {
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "arrived": "Arrived",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "confirmed": "Confirm appointment",
+      "arrived": "Mark as arrived",
+      "done": "Complete visit",
+      "cancel": "Cancel appointment",
+      "edit": "Edit or reschedule",
+      "delete": "Delete appointment"
+    },
+    "panel": {
+      "flow": "Appointment progress",
+      "when": "When",
+      "duration": "Duration",
+      "doctor": "Doctor",
+      "price": "Price",
+      "phone": "Phone",
+      "cancelledReason": "Cancellation reason: {{reason}}",
+      "finished": "This appointment is finished. There are no further steps.",
+      "missingTitle": "Appointment not found",
+      "missingDescription": "This appointment was deleted or changed."
+    },
+    "cancel": {
+      "reasonLabel": "Cancellation reason (optional)",
+      "reasonPlaceholder": "e.g. The patient called to postpone",
+      "confirm": "Confirm cancellation",
+      "back": "Back"
+    },
+    "delete": {
+      "title": "Delete this appointment?",
+      "description": "{{patient}}'s appointment at {{time}} will be deleted. You can undo right after.",
+      "confirm": "Delete"
+    }
+  },
+  "form": {
+    "titleNew": "New appointment",
+    "titleEdit": "Edit appointment",
+    "descriptionNew": "Pick the patient and a time to book in one go.",
+    "descriptionEdit": "Change anything, or move the appointment to another time or doctor.",
+    "patient": "Patient",
+    "patientSearch": "Search by name or phone",
+    "patientChange": "Change patient",
+    "patientNoResults": "No patient matches this name or number",
+    "quickAdd": "Add a new patient",
+    "quickAddFor": "Add “{{query}}” as a new patient",
+    "quickAddName": "Name",
+    "quickAddPhone": "Mobile number",
+    "quickAddSave": "Save and select patient",
+    "quickAddCancel": "Cancel adding",
+    "nameRequired": "Enter the patient's name (at least 2 characters).",
+    "phoneInvalid": "Enter a valid Egyptian mobile number: 11 digits starting with 010, 011, 012 or 015.",
+    "phoneDuplicate": "This number belongs to another patient.",
+    "quickAddFailed": "Could not add the patient. Please try again.",
+    "doctor": "Doctor",
+    "service": "Service",
+    "date": "Date",
+    "availableSlots": "Available times",
+    "noSlotsTitle": "No free slots",
+    "noSlotsDescription": "The doctor is fully booked on this day. Try another day or another doctor.",
+    "submitNew": "Book appointment",
+    "submitEdit": "Save changes",
+    "cancel": "Cancel",
+    "needPatient": "Pick the patient first.",
+    "needTime": "Pick an available time to continue.",
+    "fixConflict": "This time has a conflict: pick another time.",
+    "summaryDuration": "Duration: {{duration}}",
+    "summaryPrice": "Price: {{price}}",
+    "suggestions": "Nearest free slots",
+    "conflict": {
+      "doctor_overlap": "{{doctor}} already has an appointment from {{from}} to {{to}}.",
+      "patient_overlap": "{{patient}} already has an appointment from {{from}} to {{to}}.",
+      "outside_hours": "This time is outside {{doctor}}'s working hours ({{from}} – {{to}})."
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week",
+    "prevDay": "Previous day",
+    "nextDay": "Next day",
+    "viewDay": "Day",
+    "viewWeek": "Week",
+    "view": "View",
+    "doctorFilter": "Doctor",
+    "allDoctors": "All doctors",
+    "newAppointment": "New appointment",
+    "emptyTitle": "No appointments in this period",
+    "emptyDescription": "Click any empty slot on the calendar or start with a new appointment.",
+    "errorTitle": "Could not load the calendar",
+    "errorDescription": "Something went wrong while reading the appointments. Please try again.",
+    "gridLabel": "Appointments schedule",
+    "moveHint": "Drag an appointment to move it, or open it and choose “Edit or reschedule”.",
+    "blocked": "Can't move the appointment here: {{reason}}",
+    "blockLabel": "{{patient}}, {{service}}, {{doctor}}, {{time}}, {{status}}"
+  },
+  "toast": {
+    "undo": "Undo",
+    "undone": "Undone.",
+    "dismiss": "Dismiss notification",
+    "region": "Notifications",
+    "failed": "Could not complete the action. Please try again.",
+    "notFound": "The appointment or patient was not found.",
+    "conflict": "Not possible: {{reason}}",
+    "booked": "Booked {{patient}}'s appointment {{when}}.",
+    "rescheduled": "Moved {{patient}}'s appointment to {{when}}.",
+    "updated": "Updated {{patient}}'s appointment.",
+    "deleted": "Deleted {{patient}}'s appointment.",
+    "status": {
+      "confirmed": "Confirmed {{patient}}'s appointment.",
+      "arrived": "{{patient}} is marked as arrived.",
+      "done": "Completed {{patient}}'s visit.",
+      "cancelled": "Cancelled {{patient}}'s appointment."
+    }
   }
 }

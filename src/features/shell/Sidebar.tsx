@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { IconButton } from '@/components/ui/IconButton';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { repositories } from '@/data/repository';
 import type { Session } from '@/data/types';
@@ -49,7 +48,8 @@ function DoctorName({ id }: { id: string }) {
   const localize = useLocalized();
   const load = useCallback(() => repositories.doctors.getById(id), [id]);
   const state = useAsync(load);
-  if (state.status !== 'success' || !state.data) return <Skeleton className="h-4 w-24" />;
+  if (state.status !== 'success' || !state.data)
+    return <span aria-hidden className="skeleton inline-block h-4 w-24 rounded-md align-middle" />;
   return <>{localize(state.data.name)}</>;
 }
 
