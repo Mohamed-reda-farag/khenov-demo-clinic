@@ -1,4 +1,4 @@
-import { NAMESPACE, PREFS_NAMESPACE, STALE_NAMESPACE_PREFIX } from './config';
+import { NAMESPACE, PREFS_NAMESPACE, isStaleNamespaceKey } from './config';
 
 function detectBackend(): Storage | null {
   try {
@@ -91,8 +91,5 @@ export const prefsStorage = createNamespacedStorage(PREFS_NAMESPACE);
 
 /** Removes data written by older SEED_VERSIONs. */
 export function purgeStaleNamespaces(): void {
-  const current = `${NAMESPACE}:`;
-  allKeys()
-    .filter((key) => key.startsWith(STALE_NAMESPACE_PREFIX) && !key.startsWith(current))
-    .forEach(rawRemove);
+  allKeys().filter(isStaleNamespaceKey).forEach(rawRemove);
 }

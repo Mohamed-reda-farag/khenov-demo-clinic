@@ -16,6 +16,11 @@ export default defineConfig({
     root: '.',
     plugins: [react(), tailwindcss()],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-    build: { rollupOptions: { input: fileURLToPath(new URL('./index.html', import.meta.url)) } },
+    build: {
+      // electron-vite leaves the renderer unminified by default: minify it like the web build.
+      minify: true,
+      cssMinify: true,
+      rollupOptions: { input: fileURLToPath(new URL('./index.html', import.meta.url)) },
+    },
   },
 });

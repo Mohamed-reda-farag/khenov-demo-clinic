@@ -3,17 +3,54 @@
 ## Done
 
 - **M0 Foundation** (approved): tokens, AR/EN + RTL, app shell, Command Palette, demo kit, seed, repository layer, fake login, settings.
-- **M1 Receptionist core** (delivered, awaiting Team Leader review)
+- **M1 Receptionist core** (approved)
   - Dashboard with real data: today's counters, next appointments, per-doctor load, quick actions.
-  - Calendar: week (Saturday start) and day-by-doctor views, doctor filter, 09:00-21:00 grid, 15-minute snapping, now line, click an empty slot to book, drag to reschedule (live ghost, conflict flagged before drop), keyboard alternative through the appointment panel.
+  - Calendar: week (Saturday start) and day-by-doctor views, doctor filter, 09:00-21:00 grid, 15-minute snapping, now line, drag to reschedule (live ghost, conflict flagged before drop), keyboard alternative through the appointment panel.
   - New appointment dialog: searchable patient combobox (AR/EN/phone) with quick add, doctor, service, date, free-slot picker, inline conflict messages with nearest free slots.
   - Appointment panel: status flow Pending > Confirmed > Arrived > Done (+ Cancelled with optional reason), edit / reschedule, delete with confirm. Every change shows a toast with Undo (Ctrl/Cmd+Z too).
   - Repositories enforce overlap, patient overlap, working hours and the status flow, and throw typed `RepositoryError`s.
   - 50 unit tests (conflicts, slots, status flow, lane layout, seed anchor, repository rules), part of `npm run check`.
 
+- **M2 Patients, doctors, services, reports, notifications, search, shortcuts, Doctor role** (approved)
+  - M1 fixes: custom localized date picker (Radix Popover + date-fns, Saturday-first, AR/EN digits and names, keyboard operable, no native date input left); drag ghost is clipped so it never covers or hides under the sticky header, and the grid auto-scrolls (vertical and horizontal) while dragging near an edge.
+  - Patients: searchable / sortable / filterable table, profile with appointment history, add / edit / delete (blocked with a clear message while upcoming appointments exist; deleting removes past history).
+  - Doctors: cards with hours and today's load, detail page with a read-only weekly schedule, edit (name, specialty, hours, active). Hours are enforced in the repository (grid range, no upcoming appointment left outside, inactive doctors refuse new bookings).
+  - Services: table, add / edit / delete (blocked while upcoming appointments use it; duration and specialty locked then).
+  - Reports (lazy-loaded): range selector, KPIs, plain-SVG charts (by day, by status, busiest hours, by doctor), each with a text summary and a "show as table" switch.
+  - Notifications: bell with unread badge, panel (read / unread, mark all read, empty / loading / error), generated from real actions plus a few seeded ones.
+  - Global search inside the Command Palette: patients, doctors, services, appointments, Arabic normalization, grouped and keyboard navigable.
+  - Shortcuts: `?` cheat sheet, N, T, [ ], /, Ctrl/Cmd+K, Ctrl/Cmd+Z, G then D / C / P / S / R.
+  - Doctor role: My day queue (arrived / done, visit note up to 200 characters), My schedule (read-only week), friendly "not available for your role" screen, role switch from the user menu without a reset.
+  - 89 unit tests.
+
+- **M3 Polish** (delivered, awaiting Team Leader review)
+  - User fixes: booking is no longer possible by clicking a calendar cell (only the "New appointment" button, N, or the palette); drag never triggers a click (a capture-phase guard swallows the click after a drop). Booking, editing and dragging into the past are refused: `past_time` in the repository, mirrored in the form (no past slots, disabled past days, "try tomorrow") and in the drag ghost.
+  - Motion: route transitions, shimmer skeletons (transform only), status-badge pop, count-up numbers (reduced-motion safe), entry animations for dialogs, popovers, toasts, blocks and list items.
+  - Audit: RTL and dark pass on every screen (see the report), contrast checked for every token pair in both themes, accessibility fixes (route announcements and focus, linked field errors, status icons, chart descriptions, landmarks).
+  - `?demo=error` (every list fails once, Retry recovers) and `?demo=empty` (clean clinic in its own storage) to reach every error and empty state.
+  - Performance: every heavy screen and dialog is a separate chunk; the Electron renderer is minified.
+  - Reset demo: explains what is reset, keeps preferences, and confirms on the login screen.
+  - 110 unit tests (past-time rule with an injectable clock, demo switches, repository rules).
+
+- **M3.1a user-reported fixes, receptionist** (delivered, awaiting Team Leader review)
+  - Calendar: specialty filter next to the doctor filter (shared calendar store; doctor options narrow to the specialty; changing it resets an incompatible doctor; "all" clears).
+  - The navigation button says "Today" in day view and "This week" in week view, jumps accordingly, and is subtle / `aria-disabled` when the current day or week is already shown (also on the doctor's schedule).
+  - Finished appointments (Done, Cancelled, No-show) are locked: the repository throws `locked_status` for any change of time, doctor, service or patient; the UI shows no grab cursor, no Edit action and a read-only note. Visit notes stay writable.
+  - Drag: the card follows the pointer at the exact grabbed point (offset taken at pointerdown, applied to the ghost); a dashed slot shows the snapped target, computed from the card's top edge. Pure functions in `lib/scheduling/drag.ts`.
+  - New status No-show (`no_show`, "لم يحضر"): Pending or Confirmed to No-show only once the end time has passed (`now >= end`, injectable clock), final, undo through the toast. Own icon (UserX), violet token pair, label in AR/EN, dashboard counter, panel action, notification and toast text. Reports: separate count, "no-show rate" KPI, donut slice and summary. Seed: a few past no-shows.
+  - 159 unit tests.
+
+- **M3.1b doctor role + drag fix** (delivered, awaiting Team Leader review)
+  - Drag root cause: the route wrapper `.anim-route` kept `transform: matrix(1,0,0,1,0,0)` after its entry animation (`animation-fill-mode: both`), which made it the containing block of the `position: fixed` ghost, so the ghost was shifted by the sidebar width and top bar height. Fixed by rendering the ghost in a portal on `document.body`, and by `backwards` fill on `.anim-route` (guarded by `npm run check:motion`). Math is one viewport space in `lib/scheduling/drag.ts` (`resolveDrag`): ghost = pointer minus grab offset, column from the ghost's horizontal centre, time from the ghost's top edge.
+  - Drag debug overlay (dev only): open the calendar with `?debug=drag` (`npm run dev`). It draws the pointer (red dot, must sit on the grabbed point of the ghost), the ghost top edge (magenta line) and the computed slot (green outline), plus a readout. It is absent from production builds. To remove it for good: delete `features/calendar/dragDebug.ts` and `DragDebugOverlay.tsx` and the two lines that use them in `CalendarGrid.tsx`.
+  - Doctor: "My schedule" has Day / Week (default Week) with the same Today / This week rule; the shared `features/appointments/VisitActions.tsx` serves "My day" and the panel that opens from a schedule card (Patient arrived, Complete visit, Did not attend after the end time, visit note, read-only note for finished ones).
+  - Doctor "My reports" (`/my-reports`, G then R): `repositories.reports.myReport(range)` takes the doctor from the stored session (never from an argument; `forbidden` otherwise) and reuses the pure `aggregate` functions through `buildDoctorReport`. No by-doctor chart, no clinic comparison, no revenue.
+  - "Working day" in the average-per-working-day KPI means a day of the range with at least one not-cancelled appointment of that doctor.
+  - Arabic spelling unified to "النهاردة".
+
 ## Next
 
-- M2 Patients, doctors view, services, reports, notifications, search, shortcuts. Waiting for the Team Leader's order.
+- M4 Packaging: Electron builds, static web build, icon, README, portfolio pack. Waiting for the Team Leader's order.
 
 ## Decisions
 
@@ -29,11 +66,21 @@
 - All appointment writes are optimistic and run through a single ordered queue, so Undo can never be applied out of order.
 - Drag and drop uses native pointer events (no library). The ghost is a fixed element moved with `transform`, and column rectangles are measured at pointer time, so there is no layout work while dragging.
 - Native `<select>` and `<input type="date">` are used for doctor, service and date fields (free, accessible, no extra dependency). The date input follows the browser's locale.
-- Doctor role keeps the placeholder pages; it cannot reach receptionist routes.
+- Doctor role screens are real (My day, My schedule); each role sees a friendly message on screens that belong to the other role.
+- Seed is version 3: ~55 extra past appointments (days -3 to -28) so the reports have data; the 40 appointments around today are unchanged. Notifications are stored in the demo namespace and seeded relative to now.
+- Deleting a patient also removes their past appointments; deleting a service keeps past appointments (shown as "Deleted service").
+- Charts are plain SVG; the reports route is code-split (it is small because there is no chart library).
+- Palette results are ordered patients, doctors, services, then appointments, so the strongest match is first.
 
-## Dependencies added in M1
+- "Now" comes from `src/lib/clock.ts` (the real clock; tests inject one with `setClock`). A start time earlier than the current time rounded up to the next quarter hour is in the past. Existing past appointments keep their time and can still change status or notes; only moving them to a past time is refused.
+- Booking is available only from the toolbar button, N and the palette; calendar cells are not interactive.
+- `?demo=` accepts a comma list: `fast`, `error`, `empty`.
 
-- `vitest` (dev): unit tests for the scheduling rules, repositories and seed.
+## Dependencies added
+
+- M1: `vitest` (dev): unit tests.
+- M3: none.
+- M2: `@radix-ui/react-popover` (date picker and notifications panel: focus handling, positioning, Esc) and `@radix-ui/react-dropdown-menu` (user menu: roving focus, typeahead, correct menu semantics).
 
 ## How to run
 
@@ -47,4 +94,7 @@ npm run build:web        # static site in dist/
 npm run build:electron   # compiled app in out/
 ```
 
-Add `?demo=fast` to the browser URL to disable simulated delays.
+Add `?demo=fast` to the browser URL to disable simulated delays, `?demo=error` to see every error state (Retry recovers), `?demo=empty` for a clean clinic. Combine them: `?demo=fast,error`.
+
+- Seed is version 4 (M3.1a): past appointments now include no-shows, so stored demo data is re-seeded once (preferences are kept).
+- Repository error codes are lowercase snake case like the existing ones: `locked_status` is the LOCKED_STATUS error.

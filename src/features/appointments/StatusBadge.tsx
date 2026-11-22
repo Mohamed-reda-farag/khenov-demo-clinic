@@ -13,8 +13,9 @@ export function StatusBadge({
   const { t } = useTranslation();
   return (
     <span
+      key={status}
       className={cn(
-        'inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold',
+        'anim-badge inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold',
         STATUS_STYLES[status].badge,
         className,
       )}

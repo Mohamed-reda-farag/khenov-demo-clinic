@@ -1,21 +1,27 @@
-import { CalendarDays, ChevronLeft, ChevronRight, Info, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Field';
 import { IconButton } from '@/components/ui/IconButton';
 import { Segmented } from '@/components/ui/Segmented';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { SPECIALTIES, SPECIALTY_KEYS } from '@/data/specialties';
 import type { Doctor } from '@/data/types';
+import type { SpecialtyFilter } from '@/lib/scheduling/filters';
+import type { CalendarView } from '@/stores/calendarStore';
 import { useLocalized } from '@/i18n/useLocalized';
-
-export type CalendarView = 'week' | 'day';
+import { TodayButton } from './TodayButton';
 
 interface CalendarToolbarProps {
   label: string;
   view: CalendarView;
+  anchor: Date;
+  /** Doctors of the chosen specialty (the doctor options). */
   doctors: Doctor[];
+  specialtyFilter: SpecialtyFilter;
   doctorFilter: string;
   onViewChange: (view: CalendarView) => void;
+  onSpecialtyChange: (specialty: SpecialtyFilter) => void;
   onDoctorChange: (doctorId: string) => void;
   onPrev: () => void;
   onNext: () => void;
@@ -26,9 +32,12 @@ interface CalendarToolbarProps {
 export function CalendarToolbar({
   label,
   view,
+  anchor,
   doctors,
+  specialtyFilter,
   doctorFilter,
   onViewChange,
+  onSpecialtyChange,
   onDoctorChange,
   onPrev,
   onNext,
@@ -54,15 +63,28 @@ export function CalendarToolbar({
               <ChevronRight className="size-5 rtl:-scale-x-100" aria-hidden />
             </IconButton>
           </Tooltip>
-          <Button variant="secondary" onClick={onToday}>
-            <CalendarDays className="size-4" aria-hidden />
-            {t('calendar.today')}
-          </Button>
-          <h1 className="ms-2 text-xl font-semibold text-fg" aria-live="polite">
+          <TodayButton view={view} anchor={anchor} onGoToday={onToday} />
+          <h1 className="sr-only">{t('calendar.title')}</h1>
+          <p className="ms-2 text-xl font-semibold text-fg" aria-live="polite">
             {label}
-          </h1>
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <label className="flex items-center gap-2 text-sm text-muted">
+            <span className="sr-only sm:not-sr-only">{t('calendar.specialtyFilter')}</span>
+            <Select
+              value={specialtyFilter}
+              onChange={(event) => onSpecialtyChange(event.target.value as SpecialtyFilter)}
+              className="min-w-44"
+            >
+              <option value="all">{t('calendar.allSpecialties')}</option>
+              {SPECIALTY_KEYS.map((key) => (
+                <option key={key} value={key}>
+                  {localize(SPECIALTIES[key])}
+                </option>
+              ))}
+            </Select>
+          </label>
           <label className="flex items-center gap-2 text-sm text-muted">
             <span className="sr-only sm:not-sr-only">{t('calendar.doctorFilter')}</span>
             <Select

@@ -8,6 +8,8 @@ export interface ConfirmOptions {
   description: string;
   confirmLabel: string;
   tone?: 'primary' | 'danger';
+  /** Just a message with one button (nothing to confirm). */
+  infoOnly?: boolean;
 }
 
 type ConfirmFn = (options: ConfirmOptions) => Promise<boolean>;

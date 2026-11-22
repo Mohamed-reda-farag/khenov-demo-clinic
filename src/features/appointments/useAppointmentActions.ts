@@ -8,6 +8,8 @@ import { useLocalized } from '@/i18n/useLocalized';
 import { createId } from '@/lib/id';
 import type { Conflict } from '@/lib/scheduling/conflicts';
 import { useAppointmentsStore } from '@/stores/appointmentsStore';
+import { notificationForChange } from '@/lib/notifications';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import { useToastStore } from '@/stores/toastStore';
 import { useCatalogMaps } from './useCatalogMaps';
 import { useConflictText } from './useConflictText';
@@ -53,6 +55,9 @@ export function useAppointmentActions() {
     const fail = (error: RepositoryError | null, subject: Appointment | null) => {
       let message = t('toast.failed');
       if (error?.code === 'not_found') message = t('toast.notFound');
+      if (error?.code === 'past_time') message = t('toast.pastTime');
+      if (error?.code === 'locked_status') message = t('toast.locked');
+      if (error?.code === 'inactive') message = t('toast.inactiveDoctor');
       const conflict = error?.conflicts[0];
       if (conflict && subject) message = describeConflict(conflict, subject);
       push({ tone: 'error', message });
@@ -79,6 +84,8 @@ export function useAppointmentActions() {
         fail(result.error, after ?? before);
         return false;
       }
+      const draft = notificationForChange(before, after);
+      if (draft) void useNotificationsStore.getState().add(draft);
       push({
         tone: 'success',
         message,
@@ -146,6 +153,17 @@ export function useAppointmentActions() {
           moved
             ? t('toast.rescheduled', { patient, when: when(next.start) })
             : t('toast.updated', { patient }),
+        );
+      },
+
+      /** Short non-medical visit note written by the doctor (max 200 characters, enforced by the repository). */
+      saveNote: (appointment: Appointment, note: string) => {
+        const visitNote = note.trim() || null;
+        return perform(
+          appointment,
+          { ...appointment, visitNote },
+          () => repositories.appointments.update(appointment.id, { visitNote }),
+          t('toast.noteSaved'),
         );
       },
 

@@ -13,7 +13,7 @@ export function BrandMark({ name, light = false, className }: BrandMarkProps) {
       <span
         className={cn(
           'flex size-10 shrink-0 items-center justify-center rounded-md',
-          light ? 'bg-surface text-primary' : 'bg-primary text-on-primary',
+          light ? 'bg-on-brand text-brand-1' : 'bg-primary text-on-primary',
         )}
       >
         <svg viewBox="0 0 32 32" className="size-6" fill="none" aria-hidden>
@@ -27,9 +27,7 @@ export function BrandMark({ name, light = false, className }: BrandMarkProps) {
         </svg>
       </span>
       {name && (
-        <span
-          className={cn('truncate text-lg font-semibold', light ? 'text-on-primary' : 'text-fg')}
-        >
+        <span className={cn('truncate text-lg font-semibold', light ? 'text-on-brand' : 'text-fg')}>
           {name}
         </span>
       )}

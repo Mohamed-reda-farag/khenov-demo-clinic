@@ -1,5 +1,13 @@
-import { BarChart3, CalendarDays, ConciergeBell, ListChecks, Stethoscope } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { repositories } from '@/data/repository';
+import {
+  BarChart3,
+  CalendarDays,
+  CircleCheck,
+  ConciergeBell,
+  ListChecks,
+  Stethoscope,
+} from 'lucide-react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { Button } from '@/components/ui/Button';
@@ -27,6 +35,11 @@ export function LoginScreen() {
   const [role, setRole] = useState<Role>('receptionist');
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  // Shown once after "Reset demo" (the flag is cleared as soon as the screen is up).
+  const [justReset] = useState(() => repositories.preferences.hasResetNotice());
+  useEffect(() => {
+    repositories.preferences.clearResetNotice();
+  }, []);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -42,15 +55,15 @@ export function LoginScreen() {
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <section className="brand-panel hidden flex-col justify-between p-12 text-on-primary lg:flex">
+      <section className="brand-panel hidden flex-col justify-between p-12 text-on-brand lg:flex">
         <BrandMark name={t('app.name')} light />
         <div className="anim-rise-in max-w-md">
-          <h2 className="text-3xl font-semibold text-on-primary">{t('login.brandHeadline')}</h2>
-          <p className="mt-4 text-base text-on-primary opacity-90">{t('login.brandBody')}</p>
+          <h2 className="text-3xl font-semibold text-on-brand">{t('login.brandHeadline')}</h2>
+          <p className="mt-4 text-base text-on-brand opacity-90">{t('login.brandBody')}</p>
           <ul className="mt-8 flex flex-col gap-4">
             {HIGHLIGHTS.map(({ icon: Icon, key }) => (
-              <li key={key} className="flex items-center gap-3 text-sm text-on-primary">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-on-primary/15">
+              <li key={key} className="flex items-center gap-3 text-sm text-on-brand">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-on-brand/15">
                   <Icon className="size-5" aria-hidden />
                 </span>
                 {t(key)}
@@ -58,7 +71,7 @@ export function LoginScreen() {
             ))}
           </ul>
         </div>
-        <p className="text-xs text-on-primary opacity-80">{t('app.tagline')}</p>
+        <p className="text-xs text-on-brand opacity-80">{t('app.tagline')}</p>
       </section>
 
       <main className="flex flex-col bg-canvas">
@@ -74,6 +87,16 @@ export function LoginScreen() {
           <form onSubmit={onSubmit} className="anim-rise-in w-full max-w-md">
             <h1 className="text-2xl font-semibold text-fg">{t('login.title')}</h1>
             <p className="mt-2 text-sm text-muted">{t('login.subtitle')}</p>
+
+            {justReset && (
+              <p
+                role="status"
+                className="mt-6 flex items-start gap-3 rounded-md bg-success-soft p-4 text-sm text-success"
+              >
+                <CircleCheck className="mt-0.5 size-5 shrink-0" aria-hidden />
+                {t('login.resetDone')}
+              </p>
+            )}
 
             <div
               role="radiogroup"

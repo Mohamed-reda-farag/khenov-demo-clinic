@@ -1,9 +1,11 @@
 import { buildSeed } from '@/data/seed';
 import type { Appointment } from '@/data/types';
 import { daysSinceAnchor, formatAnchor, shiftAppointments } from '@/lib/scheduling/anchor';
+import { EMPTY_MODE } from '@/lib/demo/config';
 import { resetDemo, seedIfNeeded } from '@/lib/demo/seeding';
 import { demoStorage } from '@/lib/demo/storage';
 import { localRepositories } from './local';
+import { now } from '@/lib/clock';
 
 /** The only data entry point for the UI. Swap `localRepositories` to change the data source. */
 export const repositories = localRepositories;
@@ -22,11 +24,11 @@ function reanchorAppointments(today: Date): void {
 }
 
 export function initData(): void {
-  const now = new Date();
-  seedIfNeeded(() => buildSeed(now));
-  reanchorAppointments(now);
+  const today = now();
+  seedIfNeeded(() => buildSeed(today, EMPTY_MODE));
+  reanchorAppointments(today);
 }
 
 export function resetData(): void {
-  resetDemo(() => buildSeed(new Date()));
+  resetDemo(() => buildSeed(now(), EMPTY_MODE));
 }

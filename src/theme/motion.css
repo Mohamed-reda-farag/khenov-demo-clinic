@@ -45,11 +45,6 @@
     transform: scale(0.98);
   }
 }
-@keyframes pulse-soft {
-  50% {
-    opacity: 0.5;
-  }
-}
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -79,6 +74,42 @@
   from {
     opacity: 0;
     transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes shimmer-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes route-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes badge-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
   }
   to {
     opacity: 1;

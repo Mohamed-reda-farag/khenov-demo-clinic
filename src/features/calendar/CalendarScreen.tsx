@@ -1,6 +1,6 @@
-import { addDays, eachDayOfInterval, startOfDay, startOfWeek } from 'date-fns';
+import { addDays } from 'date-fns';
 import { CalendarSearch } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -8,18 +8,16 @@ import { useCatalogMaps } from '@/features/appointments/useCatalogMaps';
 import { useDataStatus, useReloadData } from '@/features/appointments/useDataStatus';
 import { useFormat } from '@/i18n/useFormat';
 import { useLocalized } from '@/i18n/useLocalized';
+import { visibleDoctors, type SpecialtyFilter } from '@/lib/scheduling/filters';
 import { useAppointmentsStore } from '@/stores/appointmentsStore';
+import { useCalendarStore } from '@/stores/calendarStore';
 import { useCatalogStore } from '@/stores/catalogStore';
 import { useUiStore } from '@/stores/uiStore';
 import { CalendarGrid } from './CalendarGrid';
 import { CalendarSkeleton } from './CalendarSkeleton';
-import { CalendarToolbar, type CalendarView } from './CalendarToolbar';
+import { CalendarToolbar } from './CalendarToolbar';
+import { dayKey, weekColumns } from './columns';
 import type { CalendarColumn } from './constants';
-
-/** Egypt's week starts on Saturday. */
-const WEEK_STARTS_ON = 6;
-
-const dayKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
 export function CalendarScreen() {
   const { t } = useTranslation();
@@ -31,40 +29,51 @@ export function CalendarScreen() {
   const doctors = useCatalogStore((state) => state.doctors);
   const appointments = useAppointmentsStore((state) => state.items);
   const openForm = useUiStore((state) => state.openForm);
+  const {
+    anchor,
+    view,
+    specialtyFilter,
+    doctorFilter,
+    setView,
+    setSpecialtyFilter,
+    setDoctorFilter,
+    goToday,
+    shift,
+  } = useCalendarStore();
 
-  const [view, setView] = useState<CalendarView>('week');
-  const [anchor, setAnchor] = useState(() => startOfDay(new Date()));
-  const [doctorFilter, setDoctorFilter] = useState('all');
-  const filterDoctorId = doctorFilter === 'all' ? null : doctorFilter;
+  // Doctors of the chosen specialty (the doctor options) and the ones actually shown.
+  const specialtyDoctors = useMemo(
+    () => visibleDoctors(doctors, specialtyFilter, 'all'),
+    [doctors, specialtyFilter],
+  );
+  const shownDoctors = useMemo(
+    () => visibleDoctors(doctors, specialtyFilter, doctorFilter),
+    [doctors, specialtyFilter, doctorFilter],
+  );
+  const shownIds = useMemo(() => shownDoctors.map((d) => d.id), [shownDoctors]);
+  const singleDoctorId = shownDoctors.length === 1 ? shownDoctors[0]!.id : null;
+  // Only a deliberate doctor choice pre-fills the booking form.
+  const filterDoctorId = doctorFilter === 'all' ? null : singleDoctorId;
+  const narrowed = specialtyFilter !== 'all' || doctorFilter !== 'all';
 
   const columns = useMemo<CalendarColumn[]>(() => {
     if (view === 'week') {
-      const start = startOfWeek(anchor, { weekStartsOn: WEEK_STARTS_ON });
-      return eachDayOfInterval({ start, end: addDays(start, 6) }).map((date) => ({
-        key: dayKey(date),
-        label: format.date(date),
-        date,
-        doctorId: filterDoctorId,
-      }));
+      return weekColumns(anchor, singleDoctorId, format.date, narrowed ? shownIds : null);
     }
-    return doctors
-      .filter((doctor) => filterDoctorId === null || doctor.id === filterDoctorId)
-      .map((doctor) => ({
-        key: doctor.id,
-        label: localize(doctor.name),
-        date: anchor,
-        doctorId: doctor.id,
-      }));
-  }, [view, anchor, doctors, filterDoctorId, format, localize]);
+    return shownDoctors.map((doctor) => ({
+      key: doctor.id,
+      label: localize(doctor.name),
+      date: anchor,
+      doctorId: doctor.id,
+    }));
+  }, [view, anchor, shownDoctors, shownIds, singleDoctorId, narrowed, format, localize]);
 
   const visibleCount = useMemo(() => {
     const days = new Set(columns.map((column) => dayKey(column.date)));
     return appointments.filter(
-      (a) =>
-        days.has(dayKey(new Date(a.start))) &&
-        (filterDoctorId === null || a.doctorId === filterDoctorId),
+      (a) => days.has(dayKey(new Date(a.start))) && shownIds.includes(a.doctorId),
     ).length;
-  }, [columns, appointments, filterDoctorId]);
+  }, [columns, appointments, shownIds]);
 
   if (status === 'error') {
     return (
@@ -77,9 +86,8 @@ export function CalendarScreen() {
   }
   if (status !== 'ready') return <CalendarSkeleton />;
 
-  const step = view === 'week' ? 7 : 1;
   const first = columns[0]?.date ?? anchor;
-  const last = columns.at(-1)?.date ?? anchor;
+  const last = view === 'week' ? addDays(first, 6) : anchor;
   const label = view === 'week' ? format.range(first, last) : format.date(anchor);
 
   return (
@@ -87,13 +95,16 @@ export function CalendarScreen() {
       <CalendarToolbar
         label={label}
         view={view}
-        doctors={doctors}
+        anchor={anchor}
+        doctors={specialtyDoctors}
+        specialtyFilter={specialtyFilter}
         doctorFilter={doctorFilter}
         onViewChange={setView}
+        onSpecialtyChange={(specialty: SpecialtyFilter) => setSpecialtyFilter(specialty, doctors)}
         onDoctorChange={setDoctorFilter}
-        onPrev={() => setAnchor((current) => addDays(current, -step))}
-        onNext={() => setAnchor((current) => addDays(current, step))}
-        onToday={() => setAnchor(startOfDay(new Date()))}
+        onPrev={() => shift(-1)}
+        onNext={() => shift(1)}
+        onToday={goToday}
         onNewAppointment={() =>
           openForm({ mode: 'create', start: undefined, doctorId: filterDoctorId })
         }
@@ -107,13 +118,7 @@ export function CalendarScreen() {
           />
         </div>
       )}
-      <CalendarGrid
-        columns={columns}
-        appointments={appointments}
-        lookups={lookups}
-        filterDoctorId={filterDoctorId}
-        view={view}
-      />
+      <CalendarGrid columns={columns} appointments={appointments} lookups={lookups} view={view} />
     </div>
   );
 }

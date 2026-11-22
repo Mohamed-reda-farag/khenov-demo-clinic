@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import type { Role } from '@/data/types';
 import { homePathFor } from '@/features/shell/nav';
+import { NoAccessScreen } from '@/features/shell/NoAccessScreen';
 import { useSessionStore } from '@/stores/sessionStore';
 
 export function RequireSession() {
@@ -12,11 +13,7 @@ export function RequireSession() {
 export function RequireRole({ roles, children }: { roles: Role[]; children: ReactNode }) {
   const session = useSessionStore((state) => state.session);
   if (!session) return <Navigate to="/login" replace />;
-  return roles.includes(session.role) ? (
-    children
-  ) : (
-    <Navigate to={homePathFor(session.role)} replace />
-  );
+  return roles.includes(session.role) ? children : <NoAccessScreen role={session.role} />;
 }
 
 export function RoleHome() {

@@ -7,11 +7,13 @@ import {
   Hourglass,
   Plus,
   UserCheck,
+  UserX,
   type LucideIcon,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button, buttonStyles } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -24,16 +26,16 @@ import { useDataStatus, useReloadData } from '@/features/appointments/useDataSta
 import { useFormat } from '@/i18n/useFormat';
 import { useLocalized } from '@/i18n/useLocalized';
 import { cn } from '@/lib/cn';
-import { CALENDAR_END_HOUR, CALENDAR_START_HOUR } from '@/lib/scheduling/constants';
+import { doctorLoad } from '@/lib/scheduling/load';
 import { useNow } from '@/lib/useNow';
 import { useAppointmentsStore } from '@/stores/appointmentsStore';
 import { useCatalogStore } from '@/stores/catalogStore';
 import { useUiStore } from '@/stores/uiStore';
 
 const UPCOMING_LIMIT = 6;
-const DAY_MINUTES = (CALENDAR_END_HOUR - CALENDAR_START_HOUR) * 60;
 
 function StatCard({
+  format,
   icon: Icon,
   label,
   value,
@@ -42,9 +44,10 @@ function StatCard({
 }: {
   icon: LucideIcon;
   label: string;
-  value: string | null;
+  value: number | null;
   hint?: string;
   index: number;
+  format: { number: (value: number) => string };
 }) {
   return (
     <div
@@ -60,7 +63,9 @@ function StatCard({
       {value === null ? (
         <Skeleton className="h-9 w-16" />
       ) : (
-        <p className="text-3xl font-semibold text-fg">{value}</p>
+        <p className="text-3xl font-semibold text-fg">
+          <AnimatedNumber value={value} format={format.number} />
+        </p>
       )}
       {hint && <p className="-mt-1 text-xs text-subtle">{hint}</p>}
     </div>
@@ -105,6 +110,7 @@ export function DashboardScreen() {
     { icon: UserCheck, label: t('dashboard.stats.arrived'), value: count('arrived') },
     { icon: Hourglass, label: t('dashboard.stats.pending'), value: count('pending') },
     { icon: CalendarX2, label: t('dashboard.stats.cancelled'), value: count('cancelled') },
+    { icon: UserX, label: t('dashboard.stats.noShow'), value: count('no_show') },
   ];
 
   return (
@@ -134,14 +140,15 @@ export function DashboardScreen() {
         />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {stats.map((stat, index) => (
               <StatCard
                 key={stat.label}
                 index={index}
+                format={format}
                 icon={stat.icon}
                 label={stat.label}
-                value={ready ? format.number(stat.value) : null}
+                value={ready ? stat.value : null}
                 hint={ready ? stat.hint : undefined}
               />
             ))}
@@ -207,7 +214,7 @@ export function DashboardScreen() {
                                 />
                               )}
                               <span className="truncate">
-                                {service ? localize(service.name) : ''} ·{' '}
+                                {service ? localize(service.name) : t('common.deletedService')} ·{' '}
                                 {doctor ? localize(doctor.name) : ''}
                               </span>
                             </span>
@@ -238,10 +245,10 @@ export function DashboardScreen() {
                       </li>
                     ))
                   : doctors.map((doctor) => {
-                      const mine = today.filter(
-                        (a) => a.doctorId === doctor.id && a.status !== 'cancelled',
-                      );
-                      const bookedMin = mine.reduce((sum, a) => sum + a.durationMin, 0);
+                      const load = doctorLoad(appointments, doctor, now);
+                      const mine = { length: load.count };
+                      const bookedMin = load.bookedMin;
+                      const DAY_MINUTES = load.workMin;
                       return (
                         <li key={doctor.id} className="flex flex-col gap-2">
                           <div className="flex items-center justify-between gap-3">

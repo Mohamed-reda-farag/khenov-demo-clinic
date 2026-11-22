@@ -1,4 +1,13 @@
-import { CalendarPlus, Languages, LogOut, RotateCcw, SunMoon, type LucideIcon } from 'lucide-react';
+import {
+  CalendarPlus,
+  Keyboard,
+  Languages,
+  LogOut,
+  Repeat,
+  RotateCcw,
+  SunMoon,
+  type LucideIcon,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { Role } from '@/data/types';
@@ -6,11 +15,27 @@ import { useResetDemo } from '@/features/demo/useResetDemo';
 import { usePrefsStore } from '@/stores/prefsStore';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUiStore } from '@/stores/uiStore';
-import { navFor } from './nav';
+import { homePathFor, navFor } from './nav';
 
-export type CommandGroup = 'actions' | 'navigate' | 'preferences' | 'demo' | 'session';
+export type CommandGroup =
+  | 'actions'
+  | 'patients'
+  | 'appointments'
+  | 'doctors'
+  | 'services'
+  | 'navigate'
+  | 'preferences'
+  | 'demo'
+  | 'session';
+
+/** Display order in the palette. */
 export const COMMAND_GROUPS: CommandGroup[] = [
   'actions',
+  'patients',
+  'doctors',
+  'services',
+  // Appointments rank below the people and things they belong to.
+  'appointments',
   'navigate',
   'preferences',
   'demo',
@@ -21,6 +46,8 @@ export interface Command {
   id: string;
   group: CommandGroup;
   label: string;
+  /** Second line (search results). */
+  description?: string;
   /** Extra searchable text (both languages). */
   keywords: string;
   icon: LucideIcon;
@@ -34,7 +61,10 @@ export function useCommands(role: Role): Command[] {
   const theme = usePrefsStore((state) => state.theme);
   const setLang = usePrefsStore((state) => state.setLang);
   const setTheme = usePrefsStore((state) => state.setTheme);
+  const login = useSessionStore((state) => state.login);
   const logout = useSessionStore((state) => state.logout);
+  const setShortcutsOpen = useUiStore((state) => state.setShortcutsOpen);
+  const otherRole: Role = role === 'receptionist' ? 'doctor' : 'receptionist';
   const resetDemo = useResetDemo();
   const openForm = useUiStore((state) => state.openForm);
 
@@ -85,12 +115,30 @@ export function useCommands(role: Role): Command[] {
       run: () => setTheme(theme === 'light' ? 'dark' : 'light'),
     },
     {
+      id: 'shortcuts',
+      group: 'preferences',
+      label: t('palette.shortcuts'),
+      keywords: `${bothLanguages('palette.shortcuts')} keyboard shortcuts اختصارات`,
+      icon: Keyboard,
+      run: () => setShortcutsOpen(true),
+    },
+    {
       id: 'reset-demo',
       group: 'demo',
       label: t('palette.resetDemo'),
       keywords: `${bothLanguages('settings.resetTitle')} reset demo`,
       icon: RotateCcw,
       run: () => void resetDemo(),
+    },
+    {
+      id: 'switch-role',
+      group: 'session',
+      label: t('shell.switchTo', { role: t(`roles.${otherRole}`) }),
+      keywords: `${bothLanguages('shell.switchRole')} switch role`,
+      icon: Repeat,
+      run: () => {
+        void login(otherRole).then(() => navigate(homePathFor(otherRole)));
+      },
     },
     {
       id: 'sign-out',

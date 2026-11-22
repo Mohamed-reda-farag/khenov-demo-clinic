@@ -3,6 +3,7 @@ import {
   CalendarDays,
   CalendarRange,
   ClipboardList,
+  FileBarChart,
   LayoutDashboard,
   ListChecks,
   Settings,
@@ -21,6 +22,7 @@ export type NavId =
   | 'reports'
   | 'myDay'
   | 'mySchedule'
+  | 'myReports'
   | 'settings';
 
 export interface NavItem {
@@ -80,6 +82,13 @@ export const NAV_ITEMS: NavItem[] = [
     path: '/my-schedule',
     icon: CalendarRange,
     labelKey: 'nav.mySchedule',
+    roles: ['doctor'],
+  },
+  {
+    id: 'myReports',
+    path: '/my-reports',
+    icon: FileBarChart,
+    labelKey: 'nav.myReports',
     roles: ['doctor'],
   },
   {

@@ -8,11 +8,13 @@ import { cn } from '@/lib/cn';
 import { normalizeSearch as normalize } from '@/lib/text';
 import { usePaletteStore } from '@/stores/paletteStore';
 import { COMMAND_GROUPS, useCommands, type Command } from './useCommands';
+import { useSearchItems } from './useSearchItems';
 
 function PaletteBody({ role, onClose }: { role: Role; onClose: () => void }) {
   const { t } = useTranslation();
   const commands = useCommands(role);
   const [query, setQuery] = useState('');
+  const searchItems = useSearchItems(query, role);
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -20,9 +22,10 @@ function PaletteBody({ role, onClose }: { role: Role; onClose: () => void }) {
   const filtered = commands.filter(
     (command) => !needle || normalize(`${command.label} ${command.keywords}`).includes(needle),
   );
+  const everything = [...filtered, ...searchItems];
   const groups = COMMAND_GROUPS.map((group) => ({
     group,
-    items: filtered.filter((command) => command.group === group),
+    items: everything.filter((command) => command.group === group),
   })).filter(({ items }) => items.length > 0);
   const flat = groups.flatMap(({ items }) => items);
   const activeIndex = Math.min(active, Math.max(flat.length - 1, 0));
@@ -105,12 +108,19 @@ function PaletteBody({ role, onClose }: { role: Role; onClose: () => void }) {
                     onClick={() => run(command)}
                     onMouseMove={() => setActive(index)}
                     className={cn(
-                      'flex min-h-11 items-center gap-3 rounded-md px-3 text-sm text-fg',
+                      'flex min-h-11 items-center gap-3 rounded-md px-3 py-1 text-sm text-fg',
                       index === activeIndex && 'bg-primary-soft text-primary-strong',
                     )}
                   >
                     <Icon className="size-5 shrink-0" aria-hidden />
-                    <span className="truncate">{command.label}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate">{command.label}</span>
+                      {command.description && (
+                        <span className="block truncate text-xs text-muted">
+                          {command.description}
+                        </span>
+                      )}
+                    </span>
                   </div>
                 );
               })}

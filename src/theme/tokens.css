@@ -6,7 +6,7 @@
   --c-surface: #ffffff;
   --c-surface-2: #eaf1f3;
   --c-border: #d8e3e6;
-  --c-border-strong: #b7c9ce;
+  --c-border-strong: #7a949b;
   --c-text: #11262b;
   --c-text-muted: #4b646b;
   --c-text-subtle: #587177;
@@ -16,10 +16,13 @@
   --c-primary-strong: #0a646c;
   --c-primary-soft: #ddf1f2;
   --c-on-primary: #ffffff;
-  --c-accent: #2f6fde;
-  --c-accent-soft: #e3ecfc;
+  --c-accent: #2a62c6;
+  --c-accent-soft: #e6eefc;
   --c-brand-1: #0b5f68;
   --c-brand-2: #173f7a;
+  /* Text on the brand gradient is white in both themes (the dark theme flips --c-on-primary). */
+  --c-on-brand: #ffffff;
+  --c-shimmer: rgb(255 255 255 / 0.55);
   /* feedback */
   --c-success: #17693f;
   --c-success-soft: #dcf3e7;
@@ -41,10 +44,12 @@
   --c-status-done-soft: var(--c-success-soft);
   --c-status-cancelled: var(--c-danger);
   --c-status-cancelled-soft: var(--c-danger-soft);
+  --c-status-no-show: #5b3fa8;
+  --c-status-no-show-soft: #ece6fa;
   /* doctors (calendar / charts) */
   --c-doctor-1: #0e7c86;
   --c-doctor-2: #6b4fd8;
-  --c-doctor-3: #b5620f;
+  --c-doctor-3: #a8590c;
   --c-doctor-4: #c2385f;
   /* shadows */
   --sh-sm: 0 1px 2px rgb(16 42 48 / 0.06);
@@ -55,11 +60,13 @@
 [data-theme='dark'] {
   color-scheme: dark;
   --c-status-confirmed: var(--c-accent);
+  --c-status-no-show: #c3b5ff;
+  --c-status-no-show-soft: #2a2250;
   --c-bg: #0b1518;
   --c-surface: #112126;
   --c-surface-2: #172c32;
   --c-border: #243c43;
-  --c-border-strong: #35535b;
+  --c-border-strong: #5f8189;
   --c-text: #e6f1f3;
   --c-text-muted: #9db4ba;
   --c-text-subtle: #86a0a7;
@@ -78,6 +85,7 @@
   --c-danger-soft: #3e1b18;
   --c-on-danger: #3a0f0b;
   --c-focus: #7aa7ff;
+  --c-shimmer: rgb(255 255 255 / 0.07);
   --c-overlay: rgb(0 0 0 / 0.62);
   --c-doctor-1: #43c3cd;
   --c-doctor-2: #a493ff;

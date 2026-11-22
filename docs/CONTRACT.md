@@ -81,7 +81,7 @@ Work in milestones. At the end of each milestone STOP and send this report:
 - Identity: calm, clean, light theme with a dark option, medical-trustworthy but modern (teal/blue), generous whitespace, dense-but-readable tables. Desktop-first: wide layouts, keyboard shortcuts, Command Palette (Ctrl/Cmd+K), row actions, resizable/collapsible sidebar.
 - Roles (fake login, "Continue as demo"): Receptionist, Doctor.
 - Fictional data: 4 doctors, ~30 patients (name, phone, age only; no medical history), ~40 appointments around today, services with EGP prices.
-- Receptionist journey: login, today dashboard, weekly calendar (drag to reschedule, click empty slot to create), new appointment (patient search or quick-add, doctor, service, slot with conflict detection), status flow Pending > Confirmed > Arrived > Done / Cancelled with undo, simple patient profile, services and doctors management, simple reports with charts.
+- Receptionist journey: login, today dashboard, weekly calendar (drag to reschedule; booking only through the "New appointment" button, the N shortcut or the Command Palette, never by clicking a cell), new appointment (patient search or quick-add, doctor, service, slot with conflict detection), status flow Pending > Confirmed > Arrived > Done / Cancelled with undo, simple patient profile, services and doctors management, simple reports with charts.
 - Doctor journey: login, my day queue, mark arrived/done, short visit note (non-medical), my schedule.
 - Also: notifications panel (simulated), global search, settings (language, theme, Reset demo).
 
@@ -90,7 +90,7 @@ Milestones:
 - M0 Foundation: repo setup, tokens, themes, i18n AR/EN RTL, app shell, demo kit, seed data, repository layer, fake login. Runs in browser and Electron.
 - M1 Receptionist core: dashboard, calendar, new appointment, status flow, full states.
 - M2 Patients, doctors view, services, reports, notifications, search, shortcuts.
-- M3 Polish: motion, RTL audit on every screen, a11y pass, empty/error states audit, performance, Reset demo.
+- M3 Polish (also: no booking or rescheduling into the past, enforced in the repository): motion, RTL audit on every screen, a11y pass, empty/error states audit, performance, Reset demo.
 - M4 Packaging: Electron builds (Windows first), static web build, app icon from KHENOV assets, README, PORTFOLIO PACK (cover spec, screenshot shot list, 30-second video script, project summary in AR and EN).
 
 User environment: Windows 11/10, PowerShell (mention CMD if it differs), Node v24.15.0, git 2.48.1. If a package is incompatible with Node 24, say so and suggest Node 22 LTS before workarounds. Replies to the user are in Egyptian Arabic; code, commands and file names stay in English.

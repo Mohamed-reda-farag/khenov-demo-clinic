@@ -11,6 +11,8 @@ export interface SlotQuery {
   patientId: string | null;
   ignoreId?: string;
   stepMin?: number;
+  /** When given, start times that are already in the past are not free. */
+  now?: Date;
 }
 
 export interface Slot {
@@ -28,6 +30,7 @@ export function generateSlots(query: SlotQuery): Slot[] {
     patientId,
     ignoreId,
     stepMin = SLOT_STEP_MIN,
+    now,
   } = query;
   const workStart = atTime(date, doctor.workStart);
   const workEnd = atTime(date, doctor.workEnd);
@@ -42,6 +45,7 @@ export function generateSlots(query: SlotQuery): Slot[] {
       { doctorId: doctor.id, patientId, start, durationMin, ignoreId },
       appointments,
       doctor,
+      { now },
     );
     slots.push({ start, free: conflicts.length === 0 });
   }

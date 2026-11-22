@@ -1,24 +1,28 @@
 import { create } from 'zustand';
 
 export type AppointmentFormRequest =
-  | { mode: 'create'; start?: Date; doctorId?: string | null }
+  | { mode: 'create'; start?: Date; doctorId?: string | null; patientId?: string | null }
   | { mode: 'edit'; appointmentId: string };
 
 interface UiState {
   detailId: string | null;
   form: AppointmentFormRequest | null;
+  shortcutsOpen: boolean;
   openDetail: (id: string) => void;
   closeDetail: () => void;
   openForm: (request: AppointmentFormRequest) => void;
   closeForm: () => void;
+  setShortcutsOpen: (open: boolean) => void;
 }
 
 /** Which appointment dialogs are open. Any screen can open them. */
 export const useUiStore = create<UiState>((set) => ({
   detailId: null,
   form: null,
+  shortcutsOpen: false,
   openDetail: (id) => set({ detailId: id }),
   closeDetail: () => set({ detailId: null }),
   openForm: (request) => set({ form: request }),
   closeForm: () => set({ form: null }),
+  setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
 }));

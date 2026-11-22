@@ -17,6 +17,8 @@ export interface Doctor {
   colorToken: 'doctor-1' | 'doctor-2' | 'doctor-3' | 'doctor-4';
   workStart: string;
   workEnd: string;
+  /** Inactive doctors cannot receive new bookings. */
+  active: boolean;
 }
 
 export interface Patient {
@@ -35,7 +37,8 @@ export interface Service {
   priceEgp: number;
 }
 
-export type AppointmentStatus = 'pending' | 'confirmed' | 'arrived' | 'done' | 'cancelled';
+export type AppointmentStatus =
+  'pending' | 'confirmed' | 'arrived' | 'done' | 'cancelled' | 'no_show';
 
 export interface Appointment {
   id: string;
@@ -63,3 +66,22 @@ export interface Preferences {
   sidebarCollapsed: boolean;
   sidebarWidth: number;
 }
+
+export type NotificationType =
+  'booked' | 'rescheduled' | 'status' | 'deleted' | 'onlineBooking' | 'pendingReminder' | 'welcome';
+
+/** Simulated notification. Texts are built at render time from these fields (so they follow the language). */
+export interface AppNotification {
+  id: string;
+  type: NotificationType;
+  createdAt: string;
+  read: boolean;
+  patientId: string | null;
+  appointmentId: string | null;
+  status: AppointmentStatus | null;
+  /** ISO start time of the related appointment. */
+  when: string | null;
+  count: number | null;
+}
+
+export type NotificationDraft = Omit<AppNotification, 'id' | 'createdAt' | 'read'>;

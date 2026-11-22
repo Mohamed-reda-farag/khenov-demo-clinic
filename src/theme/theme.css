@@ -21,6 +21,8 @@
   --color-primary-strong: var(--c-primary-strong);
   --color-primary-soft: var(--c-primary-soft);
   --color-on-primary: var(--c-on-primary);
+  --color-on-brand: var(--c-on-brand);
+  --color-brand-1: var(--c-brand-1);
   --color-accent: var(--c-accent);
   --color-accent-soft: var(--c-accent-soft);
   --color-success: var(--c-success);
@@ -41,6 +43,8 @@
   --color-status-done-soft: var(--c-status-done-soft);
   --color-status-cancelled: var(--c-status-cancelled);
   --color-status-cancelled-soft: var(--c-status-cancelled-soft);
+  --color-status-no-show: var(--c-status-no-show);
+  --color-status-no-show-soft: var(--c-status-no-show-soft);
   --color-doctor-1: var(--c-doctor-1);
   --color-doctor-2: var(--c-doctor-2);
   --color-doctor-3: var(--c-doctor-3);
@@ -134,8 +138,26 @@
     animation: spin 700ms linear infinite;
   }
   .skeleton {
+    position: relative;
+    overflow: hidden;
     background: var(--c-surface-2);
-    animation: pulse-soft 1.4s ease-in-out infinite;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--c-shimmer), transparent);
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  [dir='rtl'] .skeleton::after {
+    animation-name: shimmer-rtl;
+    background: linear-gradient(270deg, transparent, var(--c-shimmer), transparent);
+  }
+  .anim-route {
+    animation: route-in var(--dur-slow) var(--ease-out) backwards;
+  }
+  .anim-badge {
+    animation: badge-pop var(--dur-base) var(--ease-out) both;
   }
   .overlay {
     position: fixed;
@@ -190,5 +212,11 @@
   }
   .drag-ghost {
     transition: transform var(--dur-fast) var(--ease-out);
+  }
+  [dir='rtl'] .brand-panel {
+    background:
+      radial-gradient(circle at 88% 8%, rgb(255 255 255 / 0.14), transparent 42%),
+      radial-gradient(circle at 10% 92%, rgb(255 255 255 / 0.1), transparent 46%),
+      linear-gradient(205deg, var(--c-brand-1), var(--c-brand-2));
   }
 }

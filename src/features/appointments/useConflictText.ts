@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useFormat } from '@/i18n/useFormat';
 import { useLocalized } from '@/i18n/useLocalized';
 import type { Conflict } from '@/lib/scheduling/conflicts';
+import { now } from '@/lib/clock';
+import { earliestBookable } from '@/lib/scheduling/past';
 import { atTime, endOf } from '@/lib/scheduling/time';
 import { useAppointmentsStore } from '@/stores/appointmentsStore';
 import { useCatalogMaps } from './useCatalogMaps';
@@ -25,6 +27,13 @@ export function useConflictText() {
     (conflict: Conflict, context: ConflictContext): string => {
       const doctor = doctorById.get(context.doctorId);
       const doctorName = doctor ? localize(doctor.name) : '';
+
+      if (conflict.code === 'past_time') {
+        const current = now();
+        return context.day.toDateString() === current.toDateString()
+          ? t('form.conflict.past_time', { earliest: format.time(earliestBookable(current)) })
+          : t('form.conflict.past_day');
+      }
 
       if (conflict.code === 'outside_hours') {
         return t('form.conflict.outside_hours', {

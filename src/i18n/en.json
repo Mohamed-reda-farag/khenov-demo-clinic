@@ -8,7 +8,10 @@
     "retry": "Try again",
     "cancel": "Cancel",
     "demoBadge": "Demo by KHENOV",
-    "close": "Close"
+    "close": "Close",
+    "gotIt": "Got it",
+    "unknownPatient": "Deleted patient",
+    "deletedService": "Deleted service"
   },
   "roles": {
     "receptionist": "Receptionist",
@@ -28,7 +31,8 @@
     "brandBody": "Book appointments, track arrivals and read simple reports: a complete journey from first login to last visit.",
     "highlight1": "Weekly calendar with conflict-free booking",
     "highlight2": "A clear path for every appointment, booking to done",
-    "highlight3": "Daily reports without the complexity"
+    "highlight3": "Daily reports without the complexity",
+    "resetDone": "The demo was reset: appointments, patients, services and notifications are back to their original state. Your language and theme are unchanged."
   },
   "nav": {
     "dashboard": "Today",
@@ -39,23 +43,29 @@
     "reports": "Reports",
     "myDay": "My day",
     "mySchedule": "My schedule",
-    "settings": "Settings"
+    "settings": "Settings",
+    "myReports": "My reports"
   },
   "shell": {
     "skipToContent": "Skip to content",
-    "searchPlaceholder": "Search or type a command…",
+    "searchPlaceholder": "Search patients and appointments, or type a command…",
     "switchLanguage": "Switch language",
     "toggleTheme": "Toggle theme (light / dark)",
     "collapseSidebar": "Collapse sidebar",
     "expandSidebar": "Expand sidebar",
     "resizeSidebar": "Resize sidebar",
-    "signOut": "Switch role",
+    "signOut": "Sign out",
     "demoSession": "Demo session",
-    "mainNav": "Main navigation"
+    "mainNav": "Main navigation",
+    "userMenu": "User menu",
+    "switchTo": "Switch to “{{role}}”",
+    "switchRole": "Switch role",
+    "shortcuts": "Keyboard shortcuts",
+    "sidebar": "Sidebar"
   },
   "palette": {
     "title": "Command palette",
-    "placeholder": "Type a screen or a command…",
+    "placeholder": "Search a patient, appointment or doctor, or type a command…",
     "noResults": "No matching results",
     "noResultsHint": "Try another word or clear the search.",
     "hintNavigate": "Navigate",
@@ -64,11 +74,16 @@
     "switchLanguage": "Switch to العربية",
     "toggleTheme": "Toggle theme (light / dark)",
     "resetDemo": "Reset demo",
-    "signOut": "Switch role",
+    "signOut": "Sign out",
     "groups": {
-      "actions": "Actions"
+      "actions": "Actions",
+      "patients": "Patients",
+      "appointments": "Appointments",
+      "doctors": "Doctors",
+      "services": "Services"
     },
-    "newAppointment": "New appointment"
+    "newAppointment": "New appointment",
+    "shortcuts": "Keyboard shortcuts"
   },
   "dashboard": {
     "title": "Today",
@@ -78,7 +93,8 @@
       "confirmed": "Confirmed",
       "arrived": "Arrived",
       "pending": "Pending",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "noShow": "No-shows"
     },
     "actions": {
       "newAppointment": "New appointment",
@@ -99,10 +115,6 @@
     "errorTitle": "Could not load the data",
     "errorDescription": "Something went wrong while reading the demo data. Please try again."
   },
-  "placeholder": {
-    "title": "This screen is still being prepared",
-    "description": "It will be ready soon in the demo."
-  },
   "settings": {
     "title": "Settings",
     "language": "Language",
@@ -114,10 +126,10 @@
     "light": "Light",
     "dark": "Dark",
     "resetTitle": "Reset demo",
-    "resetDescription": "Clears every change you made and restores the original data. Your language and theme stay as they are.",
+    "resetDescription": "Clears everything you did in the demo (appointments, patients, services, edits, notifications) and restores the original data. Your language, theme and sidebar layout stay as they are.",
     "resetAction": "Reset",
-    "resetConfirmTitle": "Reset all data?",
-    "resetConfirmDescription": "All appointments and edits go back to the original state, and you will be signed out of this session.",
+    "resetConfirmTitle": "Reset the demo?",
+    "resetConfirmDescription": "This clears all appointments, patients and services you added or changed, the notifications and the current session, and restores the original data. These stay: your language, theme and sidebar layout.",
     "resetConfirmAction": "Yes, reset",
     "aboutSection": "About",
     "aboutBody": "Nabd Clinic is a demo by KHENOV. All names, numbers and appointments are fictional, and there is no real server: everything stays on your device."
@@ -128,7 +140,8 @@
       "confirmed": "Confirmed",
       "arrived": "Arrived",
       "done": "Done",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "no_show": "No-show"
     },
     "actions": {
       "confirmed": "Confirm appointment",
@@ -136,7 +149,8 @@
       "done": "Complete visit",
       "cancel": "Cancel appointment",
       "edit": "Edit or reschedule",
-      "delete": "Delete appointment"
+      "delete": "Delete appointment",
+      "no_show": "Mark as no-show"
     },
     "panel": {
       "flow": "Appointment progress",
@@ -146,9 +160,10 @@
       "price": "Price",
       "phone": "Phone",
       "cancelledReason": "Cancellation reason: {{reason}}",
-      "finished": "This appointment is finished. There are no further steps.",
       "missingTitle": "Appointment not found",
-      "missingDescription": "This appointment was deleted or changed."
+      "missingDescription": "This appointment was deleted or changed.",
+      "locked": "This appointment is finished and read-only: its time, doctor and service can no longer change.",
+      "noShowHint": "“No-show” becomes available once the appointment time has ended."
     },
     "cancel": {
       "reasonLabel": "Cancellation reason (optional)",
@@ -199,8 +214,12 @@
     "conflict": {
       "doctor_overlap": "{{doctor}} already has an appointment from {{from}} to {{to}}.",
       "patient_overlap": "{{patient}} already has an appointment from {{from}} to {{to}}.",
-      "outside_hours": "This time is outside {{doctor}}'s working hours ({{from}} – {{to}})."
-    }
+      "outside_hours": "This time is outside {{doctor}}'s working hours ({{from}} – {{to}}).",
+      "past_time": "That time has passed. The earliest time available today is {{earliest}}.",
+      "past_day": "That day has passed. Pick today or a later day."
+    },
+    "noSlotsTodayDescription": "No free slots left today.",
+    "tryTomorrow": "Try tomorrow"
   },
   "calendar": {
     "title": "Calendar",
@@ -216,13 +235,16 @@
     "allDoctors": "All doctors",
     "newAppointment": "New appointment",
     "emptyTitle": "No appointments in this period",
-    "emptyDescription": "Click any empty slot on the calendar or start with a new appointment.",
+    "emptyDescription": "There are no appointments in this period. Book one with the button above.",
     "errorTitle": "Could not load the calendar",
     "errorDescription": "Something went wrong while reading the appointments. Please try again.",
     "gridLabel": "Appointments schedule",
-    "moveHint": "Drag an appointment to move it, or open it and choose “Edit or reschedule”.",
+    "moveHint": "Drag an appointment to move it, or open it and choose “Edit or reschedule”. Finished appointments (done, cancelled, no-show) are read-only.",
     "blocked": "Can't move the appointment here: {{reason}}",
-    "blockLabel": "{{patient}}, {{service}}, {{doctor}}, {{time}}, {{status}}"
+    "blockLabel": "{{patient}}, {{service}}, {{doctor}}, {{time}}, {{status}}",
+    "thisWeek": "This week",
+    "specialtyFilter": "Specialty",
+    "allSpecialties": "All specialties"
   },
   "toast": {
     "undo": "Undo",
@@ -240,7 +262,318 @@
       "confirmed": "Confirmed {{patient}}'s appointment.",
       "arrived": "{{patient}} is marked as arrived.",
       "done": "Completed {{patient}}'s visit.",
-      "cancelled": "Cancelled {{patient}}'s appointment."
+      "cancelled": "Cancelled {{patient}}'s appointment.",
+      "no_show": "{{patient}} is marked as a no-show."
+    },
+    "patientSaved": "Patient details saved.",
+    "patientDeleted": "Deleted patient {{name}}.",
+    "serviceSaved": "Service saved.",
+    "serviceDeleted": "Deleted service “{{name}}”.",
+    "doctorSaved": "Doctor details saved.",
+    "noteSaved": "Note saved.",
+    "pastTime": "Appointments can't be booked or moved to a time that has passed.",
+    "inactiveDoctor": "This doctor is switched off and isn't taking new bookings.",
+    "locked": "This appointment is finished (done, cancelled or no-show) and can no longer change."
+  },
+  "access": {
+    "title": "This screen isn't available for your role",
+    "description": "This screen belongs to another role. You are signed in as “{{role}}”.",
+    "back": "Back to my screen"
+  },
+  "datePicker": {
+    "label": "Choose a date",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today"
+  },
+  "validation": {
+    "name": "Enter the name in Arabic and English (at least 2 characters each).",
+    "age": "Age must be a number from 0 to 120.",
+    "hours": "Working hours must be between 9:00 AM and 9:00 PM, at least one hour long.",
+    "duration": "Pick a duration between 15 and 180 minutes.",
+    "price": "Enter a valid price (a number from 0 to 100000).",
+    "specialty": "Pick a specialty.",
+    "tooLong": "The note is longer than 200 characters."
+  },
+  "patients": {
+    "title": "Patients",
+    "count": "{{count}} patients",
+    "add": "Add patient",
+    "searchPlaceholder": "Search by name or phone",
+    "book": "Book appointment",
+    "edit": "Edit patient",
+    "delete": "Delete patient",
+    "back": "All patients",
+    "noNext": "None",
+    "ageUnknown": "Age not recorded",
+    "ageYears": "{{age}} years old",
+    "sort": {
+      "label": "Sort",
+      "name": "Name",
+      "age": "Age",
+      "next": "Next appointment",
+      "visits": "Visits"
+    },
+    "filter": {
+      "label": "Filter",
+      "all": "All patients",
+      "upcoming": "With upcoming appointments",
+      "none": "No upcoming appointments"
+    },
+    "columns": {
+      "name": "Name",
+      "phone": "Phone",
+      "age": "Age",
+      "next": "Next appointment",
+      "visits": "Visits",
+      "actions": "Actions"
+    },
+    "emptyTitle": "No patients yet",
+    "emptyDescription": "Add the first patient and start booking.",
+    "noResultsTitle": "No results",
+    "noResultsDescription": "Try another name, or clear the search and filter.",
+    "errorTitle": "Could not load patients",
+    "errorDescription": "Something went wrong while reading the data. Please try again.",
+    "notFoundTitle": "Patient not found",
+    "notFoundDescription": "This patient was deleted or the link is wrong.",
+    "deleteTitle": "Delete this patient?",
+    "deleteDescription": "{{name}} will be removed from the list. No appointments are linked to them.",
+    "deleteWithHistory": "{{name}} will be removed together with their past appointments ({{count}}). This can't be undone.",
+    "blockedTitle": "Can't delete this patient",
+    "blockedDescription": "{{name}} has {{count}} upcoming appointments. Cancel or move them first, then try again.",
+    "profile": {
+      "visits": "Completed visits",
+      "upcoming": "Upcoming appointments",
+      "next": "Next appointment",
+      "history": "Appointment history",
+      "historyEmptyTitle": "No appointments yet",
+      "historyEmptyDescription": "Book this patient's first appointment.",
+      "columns": {
+        "date": "When",
+        "service": "Service",
+        "doctor": "Doctor",
+        "status": "Status"
+      }
+    },
+    "form": {
+      "titleNew": "Add patient",
+      "titleEdit": "Edit patient",
+      "description": "Contact details only, no medical information.",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "phone": "Mobile number",
+      "age": "Age (optional)",
+      "ageHint": "e.g. 34",
+      "submitNew": "Add patient",
+      "submitEdit": "Save changes"
+    }
+  },
+  "doctors": {
+    "title": "Doctors",
+    "subtitle": "Specialties, working hours and today's load.",
+    "active": "Active",
+    "inactive": "Inactive",
+    "hours": "Working hours: {{from}} to {{to}}",
+    "todayLoad": "Today's load",
+    "viewSchedule": "View schedule",
+    "edit": "Edit",
+    "back": "All doctors",
+    "errorTitle": "Could not load doctors",
+    "errorDescription": "Something went wrong while reading the data. Please try again.",
+    "notFoundTitle": "Doctor not found",
+    "notFoundDescription": "The link is wrong or the doctor doesn't exist.",
+    "form": {
+      "title": "Edit doctor",
+      "description": "Name, specialty and working hours. Booking follows these hours.",
+      "specialty": "Specialty",
+      "workStart": "Shift starts",
+      "workEnd": "Shift ends",
+      "active": "Doctor is active",
+      "activeHint": "When switched off, the doctor won't appear in new bookings. Existing appointments stay as they are.",
+      "inUse": "Can't save: {{count}} upcoming appointments would fall outside the new hours or no longer match the new specialty. Move or cancel them first."
+    }
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Duration and price in EGP for every service.",
+    "add": "Add service",
+    "edit": "Edit service",
+    "delete": "Delete service",
+    "emptyTitle": "No services yet",
+    "emptyDescription": "Add the first service so you can book with it.",
+    "errorTitle": "Could not load services",
+    "errorDescription": "Something went wrong while reading the data. Please try again.",
+    "columns": {
+      "name": "Service",
+      "specialty": "Specialty",
+      "duration": "Duration",
+      "price": "Price"
+    },
+    "deleteTitle": "Delete this service?",
+    "deleteDescription": "“{{name}}” will be deleted. Past appointments that used it stay.",
+    "blockedTitle": "Can't delete this service",
+    "blockedDescription": "“{{name}}” is used by {{count}} upcoming appointments. Move or cancel them first.",
+    "form": {
+      "titleNew": "Add service",
+      "titleEdit": "Edit service",
+      "description": "Name, specialty, duration and price in EGP.",
+      "price": "Price (EGP)",
+      "submitNew": "Add service",
+      "inUse": "Duration and specialty are locked because {{count}} upcoming appointments use this service. You can still change the name and price."
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "range": "Period",
+    "ranges": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "week": "This week"
+    },
+    "showTable": "Show as table",
+    "showChart": "Show as chart",
+    "emptyTitle": "No appointments in this period",
+    "emptyDescription": "Try a longer period or book new appointments.",
+    "errorTitle": "Could not load reports",
+    "errorDescription": "Something went wrong while reading the data. Please try again.",
+    "kpi": {
+      "total": "Total appointments",
+      "done": "{{count}} completed",
+      "cancellationRate": "Cancellation rate",
+      "cancelled": "{{count}} cancelled",
+      "busiestHour": "Busiest hour",
+      "busiestDoctor": "Busiest doctor",
+      "noShowRate": "No-show rate",
+      "noShow": "{{count}} no-shows"
+    },
+    "columns": {
+      "day": "Day",
+      "status": "Status",
+      "hour": "Hour",
+      "doctor": "Doctor",
+      "count": "Count"
+    },
+    "byDay": {
+      "title": "Appointments by day",
+      "summary": "{{total}} appointments in the period. Busiest day: {{day}} with {{count}}."
+    },
+    "byStatus": {
+      "title": "Appointments by status",
+      "summary": "{{done}} completed and {{cancelled}} cancelled (cancellation rate {{rate}}); {{noShow}} no-shows (no-show rate {{noShowRate}})."
+    },
+    "byHour": {
+      "title": "Busiest hours",
+      "summary": "Busiest hour: {{hour}}.",
+      "none": "No appointments during the day."
+    },
+    "byDoctor": {
+      "title": "Appointments by doctor",
+      "summary": "Most booked doctor: {{doctor}}."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "label": "Notifications",
+    "labelUnread": "Notifications, {{count}} unread",
+    "markAllRead": "Mark all as read",
+    "unread": "unread",
+    "emptyTitle": "No notifications",
+    "emptyDescription": "Any booking, cancellation or status change will show up here.",
+    "errorTitle": "Could not load notifications",
+    "errorDescription": "Please try again.",
+    "messages": {
+      "booked": "New appointment booked for {{patient}} ({{when}}).",
+      "rescheduled": "{{patient}}'s appointment moved to {{when}}.",
+      "deleted": "{{patient}}'s appointment was deleted.",
+      "onlineBooking": "New booking request from the website: {{patient}} ({{when}}).",
+      "welcome": "Welcome to Nabd Clinic! This is a demo: book an appointment and watch the notifications update.",
+      "pendingReminder": "{{count}} appointments today are still waiting for confirmation.",
+      "status_pending": "{{patient}}'s appointment is pending again.",
+      "status_confirmed": "{{patient}}'s appointment was confirmed.",
+      "status_arrived": "{{patient}} has arrived.",
+      "status_done": "{{patient}}'s visit was completed.",
+      "status_cancelled": "{{patient}}'s appointment was cancelled.",
+      "status_no_show": "{{patient}} did not attend the appointment."
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "They work when no field or dialog is open.",
+    "then": "then",
+    "groups": {
+      "general": "General",
+      "calendar": "Appointments and calendar",
+      "goto": "Go to (press G, then a letter)"
+    },
+    "items": {
+      "palette": "Command palette and search",
+      "search": "Search",
+      "help": "Show these shortcuts",
+      "undo": "Undo the last change",
+      "newAppointment": "New appointment",
+      "today": "Go to today",
+      "prev": "Previous week or day",
+      "next": "Next week or day",
+      "goDashboard": "Today / My day",
+      "goCalendar": "Calendar / My schedule",
+      "goPatients": "Patients",
+      "goServices": "Services",
+      "goReports": "Reports"
+    }
+  },
+  "myDay": {
+    "title": "My day",
+    "queue": "Today's patient queue",
+    "next": "Next",
+    "markArrived": "Patient arrived",
+    "markDone": "Complete visit",
+    "waitingConfirmation": "Waiting for reception to confirm.",
+    "emptyTitle": "No appointments today",
+    "emptyDescription": "Your day is clear. New appointments will show up here.",
+    "errorTitle": "Could not load your day",
+    "errorDescription": "Something went wrong while reading the appointments. Please try again.",
+    "summary": {
+      "waiting": "Waiting",
+      "arrived": "Arrived",
+      "done": "Done"
+    },
+    "note": {
+      "add": "Add note",
+      "edit": "Edit note",
+      "label": "Visit note",
+      "placeholder": "e.g. Patient will return in two weeks",
+      "hint": "A short administrative note, no medical information.",
+      "counter": "{{used}} / {{max}}",
+      "save": "Save note"
+    },
+    "markNoShow": "Did not attend"
+  },
+  "mySchedule": {
+    "title": "My schedule",
+    "subtitle": "Your appointments by week or by day. Select one to see its actions.",
+    "emptyTitle": "No schedule",
+    "emptyDescription": "This account isn't linked to a doctor.",
+    "errorTitle": "Could not load the schedule",
+    "errorDescription": "Something went wrong while reading the appointments. Please try again."
+  },
+  "myReports": {
+    "title": "My reports",
+    "scope": "These numbers cover your own appointments only.",
+    "errorTitle": "Could not load your reports",
+    "errorDescription": "Something went wrong while calculating the numbers. Please try again.",
+    "emptyTitle": "No appointments in this period",
+    "emptyDescription": "Try a longer range, or come back once new appointments are booked for you.",
+    "kpi": {
+      "avgPerDay": "Average appointments per working day",
+      "workingDays": "Over {{count}} working days"
+    },
+    "byService": {
+      "title": "Top services",
+      "summary": "Most booked service: {{service}}.",
+      "none": "No services recorded in this period."
+    },
+    "columns": {
+      "service": "Service"
     }
   }
 }

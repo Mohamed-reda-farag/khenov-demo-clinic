@@ -1,13 +1,16 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { addMinutes, format as formatDate, parse, startOfDay } from 'date-fns';
+import { addDays, addMinutes, isSameDay, startOfDay } from 'date-fns';
 import { CalendarX2, TriangleAlert, X } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
+import { DatePicker } from '@/components/ui/DatePicker';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Field, Input, Select } from '@/components/ui/Field';
+import { Field, Select } from '@/components/ui/Field';
 import { IconButton } from '@/components/ui/IconButton';
 import { useFormat } from '@/i18n/useFormat';
+import { now as clockNow } from '@/lib/clock';
+import { useNow } from '@/lib/useNow';
 import { useLocalized } from '@/i18n/useLocalized';
 import { findConflicts } from '@/lib/scheduling/conflicts';
 import { generateSlots, suggestSlots } from '@/lib/scheduling/slots';
@@ -18,8 +21,6 @@ import { PatientPicker } from './PatientPicker';
 import { SlotPicker } from './SlotPicker';
 import { useAppointmentActions } from './useAppointmentActions';
 import { useConflictText } from './useConflictText';
-
-const DATE_VALUE = 'yyyy-MM-dd';
 
 interface FormState {
   patientId: string | null;
@@ -71,10 +72,10 @@ function initialState(request: AppointmentFormRequest): FormState {
   doctorId = doctorId ?? doctors[0]?.id ?? '';
 
   return {
-    patientId: null,
+    patientId: request.mode === 'create' ? (request.patientId ?? null) : null,
     doctorId,
     serviceId: serviceFor(doctorId),
-    date: startOfDay(start ?? new Date()),
+    date: startOfDay(start ?? clockNow()),
     start,
   };
 }
@@ -97,6 +98,13 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
   const service = services.find((s) => s.id === form.serviceId);
   const doctorServices = services.filter((s) => s.specialtyKey === doctor?.specialtyKey);
   const durationMin = service?.durationMin ?? 30;
+  const now = useNow();
+  // Only a booked or moved time is checked against the clock: an existing past appointment that
+  // keeps its time (for example when only the service changes) stays valid.
+  const timeChanged =
+    !editing ||
+    form.doctorId !== editing.doctorId ||
+    form.start?.getTime() !== new Date(editing.start).getTime();
 
   const freeSlots = doctor
     ? generateSlots({
@@ -106,6 +114,7 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
         appointments,
         patientId: form.patientId,
         ignoreId: editing?.id,
+        now,
       })
         .filter((slot) => slot.free)
         .map((slot) => slot.start)
@@ -123,6 +132,7 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
           },
           appointments,
           doctor,
+          { now: timeChanged ? now : undefined },
         )
       : [];
 
@@ -136,6 +146,7 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
           appointments,
           patientId: form.patientId,
           ignoreId: editing?.id,
+          now,
         })
       : [];
 
@@ -162,9 +173,7 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
     });
   };
 
-  const changeDate = (value: string) => {
-    const date = parse(value, DATE_VALUE, new Date());
-    if (Number.isNaN(date.getTime())) return;
+  const changeDate = (date: Date) => {
     const keptTime = form.start ? form.start.getHours() * 60 + form.start.getMinutes() : null;
     set({ date, start: keptTime === null ? null : addMinutes(date, keptTime) });
   };
@@ -245,12 +254,7 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
 
         <div className="flex flex-col gap-5">
           <Field label={t('form.date')} htmlFor="form-date">
-            <Input
-              id="form-date"
-              type="date"
-              value={formatDate(form.date, DATE_VALUE)}
-              onChange={(e) => changeDate(e.target.value)}
-            />
+            <DatePicker id="form-date" value={form.date} onChange={changeDate} minDate={now} />
           </Field>
 
           <div className="flex flex-col gap-2">
@@ -262,7 +266,21 @@ function FormBody({ request, onClose }: { request: AppointmentFormRequest; onClo
                 <EmptyState
                   icon={CalendarX2}
                   title={t('form.noSlotsTitle')}
-                  description={t('form.noSlotsDescription')}
+                  description={
+                    isSameDay(form.date, now)
+                      ? t('form.noSlotsTodayDescription')
+                      : t('form.noSlotsDescription')
+                  }
+                  action={
+                    isSameDay(form.date, now) ? (
+                      <Button
+                        variant="secondary"
+                        onClick={() => changeDate(addDays(startOfDay(now), 1))}
+                      >
+                        {t('form.tryTomorrow')}
+                      </Button>
+                    ) : undefined
+                  }
                 />
               </div>
             ) : (

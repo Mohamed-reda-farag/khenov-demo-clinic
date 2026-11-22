@@ -1,3 +1,12 @@
+import {
+  Ban,
+  CheckCheck,
+  CircleCheck,
+  Clock,
+  UserCheck,
+  UserX,
+  type LucideIcon,
+} from 'lucide-react';
 import type { AppointmentStatus, Doctor } from '@/data/types';
 
 /** Full class names on purpose: Tailwind only generates classes it can see in the source. */
@@ -35,6 +44,12 @@ export const STATUS_STYLES: Record<
     dot: 'bg-status-cancelled',
     step: 'border-status-cancelled bg-status-cancelled text-status-cancelled-soft',
   },
+  no_show: {
+    block: 'border-status-no-show bg-status-no-show-soft',
+    badge: 'bg-status-no-show-soft text-status-no-show',
+    dot: 'bg-status-no-show',
+    step: 'border-status-no-show bg-status-no-show text-status-no-show-soft',
+  },
 };
 
 export const DOCTOR_DOT: Record<Doctor['colorToken'], string> = {
@@ -42,4 +57,14 @@ export const DOCTOR_DOT: Record<Doctor['colorToken'], string> = {
   'doctor-2': 'bg-doctor-2',
   'doctor-3': 'bg-doctor-3',
   'doctor-4': 'bg-doctor-4',
+};
+
+/** Status is never shown by color alone: every status has its own icon too. */
+export const STATUS_ICONS: Record<AppointmentStatus, LucideIcon> = {
+  pending: Clock,
+  confirmed: CircleCheck,
+  arrived: UserCheck,
+  done: CheckCheck,
+  cancelled: Ban,
+  no_show: UserX,
 };

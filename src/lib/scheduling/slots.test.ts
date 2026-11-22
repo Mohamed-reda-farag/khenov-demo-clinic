@@ -12,6 +12,7 @@ const doctor: Doctor = {
   colorToken: 'doctor-1',
   workStart: '09:00',
   workEnd: '21:00',
+  active: true,
 };
 
 function booked(h: number, m: number, durationMin: number): Appointment {

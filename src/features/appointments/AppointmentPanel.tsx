@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { CalendarX2, Check, Pencil, Trash2, X } from 'lucide-react';
+import { CalendarX2, Check, Lock, Pencil, Trash2, UserX, X } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
@@ -12,10 +12,19 @@ import { useFormat } from '@/i18n/useFormat';
 import { useLocalized } from '@/i18n/useLocalized';
 import { cn } from '@/lib/cn';
 import { endOf } from '@/lib/scheduling/time';
-import { STATUS_FLOW, forwardStatus, nextStatuses } from '@/lib/scheduling/status';
+import {
+  STATUS_FLOW,
+  canMarkNoShow,
+  forwardStatus,
+  isLockedStatus,
+  nextStatuses,
+} from '@/lib/scheduling/status';
+import { useNow } from '@/lib/useNow';
 import { useAppointmentsStore } from '@/stores/appointmentsStore';
+import { useSessionStore } from '@/stores/sessionStore';
 import { useUiStore } from '@/stores/uiStore';
 import { StatusBadge } from './StatusBadge';
+import { VisitActions } from './VisitActions';
 import { DOCTOR_DOT, STATUS_STYLES } from './statusStyles';
 import { useAppointmentActions } from './useAppointmentActions';
 import { useCatalogMaps } from './useCatalogMaps';
@@ -91,6 +100,8 @@ function PanelBody({ appointmentId }: { appointmentId: string }) {
   const appointment = useAppointmentsStore((state) =>
     state.items.find((a) => a.id === appointmentId),
   );
+  const readOnly = useSessionStore((state) => state.session?.role === 'doctor');
+  const now = useNow();
   const closeDetail = useUiStore((state) => state.closeDetail);
   const openForm = useUiStore((state) => state.openForm);
   const [cancelling, setCancelling] = useState(false);
@@ -129,7 +140,11 @@ function PanelBody({ appointmentId }: { appointmentId: string }) {
   const start = new Date(appointment.start);
   const forward = forwardStatus(appointment.status);
   const canCancel = nextStatuses(appointment.status).includes('cancelled');
-  const editable = canCancel;
+  // Done, Cancelled and No-show are final: read-only, no edit or reschedule.
+  const locked = isLockedStatus(appointment.status);
+  const editable = !locked;
+  const noShowAllowed = canMarkNoShow(appointment, now);
+  const noShowLater = nextStatuses(appointment.status).includes('no_show') && !noShowAllowed;
   const patientName = patient ? localize(patient.name) : '';
 
   const submitCancel = (event: FormEvent) => {
@@ -156,11 +171,11 @@ function PanelBody({ appointmentId }: { appointmentId: string }) {
 
   return (
     <>
-      {header(patientName, service ? localize(service.name) : '')}
+      {header(patientName, service ? localize(service.name) : t('common.deletedService'))}
       <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-6">
-        {appointment.status === 'cancelled' ? (
+        {appointment.status === 'cancelled' || appointment.status === 'no_show' ? (
           <div className="flex flex-col gap-2">
-            <StatusBadge status="cancelled" className="self-start" />
+            <StatusBadge status={appointment.status} className="self-start" />
             {appointment.cancelReason && (
               <p className="text-sm text-muted">
                 {t('appointment.panel.cancelledReason', { reason: appointment.cancelReason })}
@@ -193,72 +208,100 @@ function PanelBody({ appointmentId }: { appointmentId: string }) {
             )}
           </Detail>
           <Detail label={t('appointment.panel.price')}>
-            {service ? format.currency(service.priceEgp) : ''}
+            {service ? format.currency(service.priceEgp) : '—'}
           </Detail>
           <Detail label={t('appointment.panel.phone')}>
             <span dir="ltr">{patient?.phone}</span>
           </Detail>
         </dl>
 
-        <div className="flex flex-col gap-3">
-          {forward && !cancelling && (
-            <Button onClick={() => void actions.changeStatus(appointment, forward)}>
-              {t(`appointment.actions.${forward}`)}
-            </Button>
-          )}
-          {!forward && !canCancel && (
-            <p className="text-sm text-muted">{t('appointment.panel.finished')}</p>
-          )}
-          {canCancel && !cancelling && (
-            <Button variant="secondary" onClick={() => setCancelling(true)}>
-              {t('appointment.actions.cancel')}
-            </Button>
-          )}
-          {cancelling && (
-            <form
-              onSubmit={submitCancel}
-              className="flex flex-col gap-3 rounded-lg border border-line bg-canvas p-4"
-            >
-              <Field label={t('appointment.cancel.reasonLabel')} htmlFor="cancel-reason">
-                <Input
-                  id="cancel-reason"
-                  autoFocus
-                  value={reason}
-                  placeholder={t('appointment.cancel.reasonPlaceholder')}
-                  onChange={(event) => setReason(event.target.value)}
-                />
-              </Field>
-              <div className="flex flex-wrap justify-end gap-2">
-                <Button variant="ghost" onClick={() => setCancelling(false)}>
-                  {t('appointment.cancel.back')}
-                </Button>
-                <Button type="submit" variant="danger">
-                  {t('appointment.cancel.confirm')}
-                </Button>
-              </div>
-            </form>
-          )}
-          {editable && (
-            <Button
-              variant="secondary"
-              onClick={() => openForm({ mode: 'edit', appointmentId: appointment.id })}
-            >
-              <Pencil className="size-4" aria-hidden />
-              {t('appointment.actions.edit')}
-            </Button>
-          )}
+        {appointment.visitNote && (
+          <p className="rounded-md bg-sunken p-3 text-sm text-fg">{appointment.visitNote}</p>
+        )}
+
+        {readOnly && <VisitActions appointment={appointment} now={now} />}
+
+        {!readOnly && (
+          <div className="flex flex-col gap-3">
+            {forward && !cancelling && (
+              <Button onClick={() => void actions.changeStatus(appointment, forward)}>
+                {t(`appointment.actions.${forward}`)}
+              </Button>
+            )}
+            {locked && (
+              <p
+                role="note"
+                className="flex items-start gap-2 rounded-md bg-sunken p-3 text-sm text-muted"
+              >
+                <Lock className="mt-0.5 size-4 shrink-0" aria-hidden />
+                <span>{t('appointment.panel.locked')}</span>
+              </p>
+            )}
+            {noShowAllowed && !cancelling && (
+              <Button
+                variant="secondary"
+                onClick={() => void actions.changeStatus(appointment, 'no_show')}
+              >
+                <UserX className="size-4" aria-hidden />
+                {t('appointment.actions.no_show')}
+              </Button>
+            )}
+            {noShowLater && (
+              <p className="text-xs text-subtle">{t('appointment.panel.noShowHint')}</p>
+            )}
+            {canCancel && !cancelling && (
+              <Button variant="secondary" onClick={() => setCancelling(true)}>
+                {t('appointment.actions.cancel')}
+              </Button>
+            )}
+            {cancelling && (
+              <form
+                onSubmit={submitCancel}
+                className="flex flex-col gap-3 rounded-lg border border-line bg-canvas p-4"
+              >
+                <Field label={t('appointment.cancel.reasonLabel')} htmlFor="cancel-reason">
+                  <Input
+                    id="cancel-reason"
+                    autoFocus
+                    value={reason}
+                    placeholder={t('appointment.cancel.reasonPlaceholder')}
+                    onChange={(event) => setReason(event.target.value)}
+                  />
+                </Field>
+                <div className="flex flex-wrap justify-end gap-2">
+                  <Button variant="ghost" onClick={() => setCancelling(false)}>
+                    {t('appointment.cancel.back')}
+                  </Button>
+                  <Button type="submit" variant="danger">
+                    {t('appointment.cancel.confirm')}
+                  </Button>
+                </div>
+              </form>
+            )}
+            {editable && (
+              <Button
+                variant="secondary"
+                onClick={() => openForm({ mode: 'edit', appointmentId: appointment.id })}
+              >
+                <Pencil className="size-4" aria-hidden />
+                {t('appointment.actions.edit')}
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      {!readOnly && (
+        <div className="border-t border-line p-4">
+          <Button
+            variant="ghost"
+            className="text-danger hover:text-danger"
+            onClick={() => void remove()}
+          >
+            <Trash2 className="size-4" aria-hidden />
+            {t('appointment.actions.delete')}
+          </Button>
         </div>
-      </div>
-      <div className="border-t border-line p-4">
-        <Button
-          variant="ghost"
-          className="text-danger hover:text-danger"
-          onClick={() => void remove()}
-        >
-          <Trash2 className="size-4" aria-hidden />
-          {t('appointment.actions.delete')}
-        </Button>
-      </div>
+      )}
     </>
   );
 }

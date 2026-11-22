@@ -4,11 +4,14 @@ import { DemoBadge } from '@/components/ui/DemoBadge';
 import { Kbd } from '@/components/ui/Kbd';
 import { LanguageToggle } from '@/features/preferences/LanguageToggle';
 import { ThemeToggle } from '@/features/preferences/ThemeToggle';
+import { NotificationsButton } from '@/features/notifications/NotificationsButton';
+import type { Session } from '@/data/types';
 import { usePaletteStore } from '@/stores/paletteStore';
+import { UserMenu } from './UserMenu';
 
 const IS_MAC = typeof navigator !== 'undefined' && /mac/i.test(navigator.platform);
 
-export function Topbar() {
+export function Topbar({ session }: { session: Session }) {
   const { t } = useTranslation();
   const setOpen = usePaletteStore((state) => state.setOpen);
 
@@ -28,6 +31,8 @@ export function Topbar() {
         <DemoBadge className="hidden lg:inline-flex" />
         <LanguageToggle />
         <ThemeToggle />
+        <NotificationsButton />
+        <UserMenu session={session} />
       </div>
     </header>
   );

@@ -1,7 +1,8 @@
 import type { Appointment, Doctor } from '@/data/types';
+import { isPastStart } from './past';
 import { atTime, endOf, overlaps } from './time';
 
-export type ConflictCode = 'doctor_overlap' | 'patient_overlap' | 'outside_hours';
+export type ConflictCode = 'past_time' | 'doctor_overlap' | 'patient_overlap' | 'outside_hours';
 
 export interface Conflict {
   code: ConflictCode;
@@ -21,16 +22,21 @@ export interface ConflictCandidate {
 
 /**
  * Pure booking rules, shared by the UI and the repositories:
- * doctor overlap, patient overlap and outside working hours. Cancelled appointments never block.
+ * not in the past (when `now` is given), doctor overlap, patient overlap and outside working hours.
+ * Cancelled appointments never block.
  */
 export function findConflicts(
   candidate: ConflictCandidate,
   appointments: readonly Appointment[],
   doctor: Pick<Doctor, 'workStart' | 'workEnd'>,
+  options: { now?: Date } = {},
 ): Conflict[] {
   const start = candidate.start;
   const end = endOf(start, candidate.durationMin);
   const conflicts: Conflict[] = [];
+
+  // Pass `now` only when the time is being booked or moved: existing past appointments stay valid.
+  if (options.now && isPastStart(start, options.now)) conflicts.push({ code: 'past_time' });
 
   if (start < atTime(start, doctor.workStart) || end > atTime(start, doctor.workEnd)) {
     conflicts.push({ code: 'outside_hours' });

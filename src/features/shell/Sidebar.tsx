@@ -1,17 +1,15 @@
-import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { useCallback, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { IconButton } from '@/components/ui/IconButton';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { repositories } from '@/data/repository';
+import { useCatalogMaps } from '@/features/appointments/useCatalogMaps';
 import type { Session } from '@/data/types';
 import { useLocalized } from '@/i18n/useLocalized';
 import { cn } from '@/lib/cn';
-import { useAsync } from '@/lib/useAsync';
 import { usePrefsStore } from '@/stores/prefsStore';
-import { useSessionStore } from '@/stores/sessionStore';
 import { SIDEBAR_MAX, SIDEBAR_MIN, SIDEBAR_STEP } from '@/theme/layout';
 import { navFor, type NavItem } from './nav';
 
@@ -44,43 +42,30 @@ function SidebarLink({ item, collapsed }: { item: NavItem; collapsed: boolean })
   );
 }
 
-function DoctorName({ id }: { id: string }) {
-  const localize = useLocalized();
-  const load = useCallback(() => repositories.doctors.getById(id), [id]);
-  const state = useAsync(load);
-  if (state.status !== 'success' || !state.data)
-    return <span aria-hidden className="skeleton inline-block h-4 w-24 rounded-md align-middle" />;
-  return <>{localize(state.data.name)}</>;
-}
-
 function UserChip({ session, collapsed }: { session: Session; collapsed: boolean }) {
   const { t } = useTranslation();
-  const logout = useSessionStore((state) => state.logout);
+  const localize = useLocalized();
+  const { doctorById } = useCatalogMaps();
   const roleLabel = t(`roles.${session.role}`);
+  const doctor = session.doctorId ? doctorById.get(session.doctorId) : undefined;
+  const name = doctor ? localize(doctor.name) : roleLabel;
 
   return (
-    <div className={cn('flex items-center gap-3', collapsed && 'flex-col')}>
+    <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
       <span
         aria-hidden
         className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-strong"
       >
-        {roleLabel.charAt(0)}
+        {name.replace(/^(د\.|Dr\.)\s*/, '').charAt(0)}
       </span>
       {!collapsed && (
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-fg">
-            {session.doctorId ? <DoctorName id={session.doctorId} /> : roleLabel}
-          </p>
+          <p className="truncate text-sm font-semibold text-fg">{name}</p>
           <p className="truncate text-xs text-muted">
-            {session.doctorId ? roleLabel : t('shell.demoSession')}
+            {doctor ? roleLabel : t('shell.demoSession')}
           </p>
         </div>
       )}
-      <Tooltip label={t('shell.signOut')}>
-        <IconButton aria-label={t('shell.signOut')} onClick={() => void logout()}>
-          <LogOut className="size-5 rtl:-scale-x-100" aria-hidden />
-        </IconButton>
-      </Tooltip>
     </div>
   );
 }
@@ -146,7 +131,10 @@ export function Sidebar({ session }: { session: Session }) {
   const settings = items.filter((item) => item.id === 'settings');
 
   return (
-    <aside className="relative flex min-h-0 flex-col border-e border-line bg-surface">
+    <aside
+      aria-label={t('shell.sidebar')}
+      className="relative flex min-h-0 flex-col border-e border-line bg-surface"
+    >
       <div className={cn('flex h-16 items-center gap-2 px-4', collapsed && 'justify-center px-0')}>
         <BrandMark
           name={collapsed ? undefined : t('app.name')}

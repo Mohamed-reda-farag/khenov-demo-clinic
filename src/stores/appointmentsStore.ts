@@ -11,6 +11,8 @@ interface AppointmentsState {
   status: LoadStatus;
   items: Appointment[];
   load: () => Promise<void>;
+  /** Drops appointments that were removed elsewhere (a patient deleted with their history). */
+  removeMany: (ids: string[]) => void;
   /**
    * Optimistic write: shows `after` immediately, then runs the repository call.
    * On failure the previous state (`before`) is restored. Writes run one at a time, in order.
@@ -41,6 +43,7 @@ export const useAppointmentsStore = create<AppointmentsState>((set, get) => ({
       set({ status: 'error' });
     }
   },
+  removeMany: (ids) => set((state) => ({ items: state.items.filter((a) => !ids.includes(a.id)) })),
   commit: async (before, after, run) => {
     const id = (after ?? before)?.id;
     if (!id) return { ok: false, error: null };

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { resetData } from '@/data/repository';
+import { repositories, resetData } from '@/data/repository';
 import { useConfirm } from '@/components/ui/confirm';
 
 /** Confirm, clear the demo namespace, reseed, then reload so every store starts fresh. */
@@ -17,6 +17,7 @@ export function useResetDemo(): () => Promise<void> {
     });
     if (!accepted) return;
     resetData();
+    repositories.preferences.flagResetNotice();
     window.location.hash = '#/login';
     window.location.reload();
   }, [confirm, t]);

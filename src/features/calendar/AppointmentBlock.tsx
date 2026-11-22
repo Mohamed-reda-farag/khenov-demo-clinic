@@ -1,6 +1,6 @@
 import { memo, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DOCTOR_DOT, STATUS_STYLES } from '@/features/appointments/statusStyles';
+import { DOCTOR_DOT, STATUS_ICONS, STATUS_STYLES } from '@/features/appointments/statusStyles';
 import type { Appointment, Doctor, Patient, Service } from '@/data/types';
 import { useFormat } from '@/i18n/useFormat';
 import { useLocalized } from '@/i18n/useLocalized';
@@ -16,6 +16,7 @@ interface AppointmentBlockProps {
   lane: number;
   lanes: number;
   dragging: boolean;
+  draggable: boolean;
   onOpen: (id: string) => void;
   onDragStart: (event: PointerEvent<HTMLButtonElement>, appointment: Appointment) => void;
 }
@@ -28,6 +29,7 @@ export const AppointmentBlock = memo(function AppointmentBlock({
   lane,
   lanes,
   dragging,
+  draggable,
   onOpen,
   onDragStart,
 }: AppointmentBlockProps) {
@@ -41,7 +43,8 @@ export const AppointmentBlock = memo(function AppointmentBlock({
   const height = appointment.durationMin * PX_PER_MIN;
   const patientName = patient ? localize(patient.name) : '';
   const doctorName = doctor ? localize(doctor.name) : '';
-  const serviceName = service ? localize(service.name) : '';
+  const serviceName = service ? localize(service.name) : t('common.deletedService');
+  const StatusIcon = STATUS_ICONS[appointment.status];
   const label = t('calendar.blockLabel', {
     patient: patientName,
     service: serviceName,
@@ -59,12 +62,14 @@ export const AppointmentBlock = memo(function AppointmentBlock({
         event.stopPropagation();
         onOpen(appointment.id);
       }}
-      onPointerDown={(event) => onDragStart(event, appointment)}
+      onPointerDown={(event) => draggable && onDragStart(event, appointment)}
       className={cn(
-        'absolute z-[1] flex cursor-grab flex-col overflow-hidden rounded-md border-s-4 px-2 py-1 text-start text-xs leading-4 text-fg shadow-sm select-none hover:shadow-md',
+        'anim-fade-in absolute z-[1] flex flex-col overflow-hidden rounded-md border-s-4 px-2 py-1 text-start text-xs leading-4 text-fg shadow-sm select-none hover:shadow-md',
         STATUS_STYLES[appointment.status].block,
+        // Locked (finished) appointments get no grab cursor: they can only be opened.
+        draggable ? 'cursor-grab' : 'cursor-pointer',
         dragging && 'opacity-40',
-        appointment.status === 'cancelled' && 'opacity-70',
+        (appointment.status === 'cancelled' || appointment.status === 'no_show') && 'opacity-70',
       )}
       style={{
         top,
@@ -73,13 +78,16 @@ export const AppointmentBlock = memo(function AppointmentBlock({
         width: `calc(${100 / lanes}% - 4px)`,
       }}
     >
-      <span
-        className={cn(
-          'truncate font-semibold',
-          appointment.status === 'cancelled' && 'line-through',
-        )}
-      >
-        {patientName}
+      <span className="flex items-center gap-1">
+        <StatusIcon aria-hidden className="size-3 shrink-0" />
+        <span
+          className={cn(
+            'truncate font-semibold',
+            appointment.status === 'cancelled' && 'line-through',
+          )}
+        >
+          {patientName}
+        </span>
       </span>
       {height >= 44 && <span className="truncate text-muted">{serviceName}</span>}
       {height >= 68 && (

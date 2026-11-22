@@ -11,10 +11,10 @@ describe('seed data', () => {
   const anchors = Array.from({ length: 21 }, (_, i) => addDays(new Date(2026, 2, 20), i * 11));
 
   it.each(anchors.map((d) => [d.toDateString(), d] as const))(
-    'has ~40 valid, conflict-free appointments anchored on %s',
+    'has valid, conflict-free appointments anchored on %s',
     (_label, anchor) => {
       const appointments = buildAppointments(anchor);
-      expect(appointments).toHaveLength(40);
+      expect(appointments.length).toBeGreaterThanOrEqual(90);
 
       for (const appointment of appointments) {
         const doctor = doctors.find((d) => d.id === appointment.doctorId)!;
@@ -45,4 +45,20 @@ describe('seed data', () => {
     );
     expect(today).toHaveLength(8);
   });
+});
+
+describe('seed no-shows', () => {
+  const anchors = Array.from({ length: 21 }, (_, i) => addDays(new Date(2026, 2, 20), i * 11));
+
+  it.each(anchors.map((d) => [d.toDateString(), d] as const))(
+    'has a few past no-shows (never today or later) anchored on %s',
+    (_label, anchor) => {
+      const appointments = buildAppointments(anchor);
+      const noShows = appointments.filter((a) => a.status === 'no_show');
+      expect(noShows.length).toBeGreaterThanOrEqual(3);
+      const startOfToday = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate());
+      for (const a of noShows)
+        expect(new Date(a.start).getTime()).toBeLessThan(startOfToday.getTime());
+    },
+  );
 });

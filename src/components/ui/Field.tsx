@@ -1,6 +1,8 @@
-import type { ComponentProps, ReactNode } from 'react';
+import { createContext, useContext, type ComponentProps, type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/cn';
+
+const FieldContext = createContext<{ errorId: string; hasError: boolean } | null>(null);
 
 interface FieldProps {
   label: string;
@@ -11,17 +13,19 @@ interface FieldProps {
 
 export function Field({ label, htmlFor, error, children }: FieldProps) {
   return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={htmlFor} className="text-sm font-semibold text-fg">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <p id={`${htmlFor}-error`} role="alert" className="text-sm text-danger">
-          {error}
-        </p>
-      )}
-    </div>
+    <FieldContext.Provider value={{ errorId: `${htmlFor}-error`, hasError: Boolean(error) }}>
+      <div className="flex flex-col gap-2">
+        <label htmlFor={htmlFor} className="text-sm font-semibold text-fg">
+          {label}
+        </label>
+        {children}
+        {error && (
+          <p id={`${htmlFor}-error`} role="alert" className="text-sm text-danger">
+            {error}
+          </p>
+        )}
+      </div>
+    </FieldContext.Provider>
   );
 }
 
@@ -33,9 +37,11 @@ export function Input({
   invalid,
   ...rest
 }: ComponentProps<'input'> & { invalid?: boolean }) {
+  const field = useContext(FieldContext);
   return (
     <input
-      aria-invalid={invalid || undefined}
+      aria-invalid={invalid || field?.hasError || undefined}
+      aria-describedby={field?.hasError ? field.errorId : undefined}
       className={cn(CONTROL, invalid ? 'border-danger' : 'border-line-strong', className)}
       {...rest}
     />
@@ -43,9 +49,12 @@ export function Input({
 }
 
 export function Select({ className, children, ...rest }: ComponentProps<'select'>) {
+  const field = useContext(FieldContext);
   return (
     <div className="relative">
       <select
+        aria-invalid={field?.hasError || undefined}
+        aria-describedby={field?.hasError ? field.errorId : undefined}
         className={cn(CONTROL, 'appearance-none border-line-strong pe-10', className)}
         {...rest}
       >

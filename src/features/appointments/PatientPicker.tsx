@@ -30,7 +30,7 @@ function QuickAdd({
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
-  const addPatient = useCatalogStore((state) => state.addPatient);
+  const savePatient = useCatalogStore((state) => state.savePatient);
   const digits = normalizePhone(initialQuery);
   const looksLikePhone =
     digits.length >= 3 && digits.length === toLatinDigits(initialQuery).trim().length;
@@ -40,7 +40,7 @@ function QuickAdd({
   const [failed, setFailed] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const issueText = (field: ValidationIssue['field']) => {
+  const issueText = (field: string) => {
     const issue = issues.find((i) => i.field === field);
     if (!issue) return null;
     if (field === 'name') return t('form.nameRequired');
@@ -57,7 +57,11 @@ function QuickAdd({
     setBusy(true);
     setFailed(false);
     try {
-      const patient = await addPatient({ name, phone });
+      const patient = await savePatient({
+        name: { ar: name.trim(), en: name.trim() },
+        phone,
+        age: null,
+      });
       onDone(patient.id);
     } catch (error) {
       if (isRepositoryError(error) && error.code === 'validation') setIssues(error.issues);
