@@ -23,7 +23,7 @@
   - Doctor role: My day queue (arrived / done, visit note up to 200 characters), My schedule (read-only week), friendly "not available for your role" screen, role switch from the user menu without a reset.
   - 89 unit tests.
 
-- **M3 Polish** (delivered, awaiting Team Leader review)
+- **M3 Polish** (approved)
   - User fixes: booking is no longer possible by clicking a calendar cell (only the "New appointment" button, N, or the palette); drag never triggers a click (a capture-phase guard swallows the click after a drop). Booking, editing and dragging into the past are refused: `past_time` in the repository, mirrored in the form (no past slots, disabled past days, "try tomorrow") and in the drag ghost.
   - Motion: route transitions, shimmer skeletons (transform only), status-badge pop, count-up numbers (reduced-motion safe), entry animations for dialogs, popovers, toasts, blocks and list items.
   - Audit: RTL and dark pass on every screen (see the report), contrast checked for every token pair in both themes, accessibility fixes (route announcements and focus, linked field errors, status icons, chart descriptions, landmarks).
@@ -32,7 +32,7 @@
   - Reset demo: explains what is reset, keeps preferences, and confirms on the login screen.
   - 110 unit tests (past-time rule with an injectable clock, demo switches, repository rules).
 
-- **M3.1a user-reported fixes, receptionist** (delivered, awaiting Team Leader review)
+- **M3.1a user-reported fixes, receptionist** (approved)
   - Calendar: specialty filter next to the doctor filter (shared calendar store; doctor options narrow to the specialty; changing it resets an incompatible doctor; "all" clears).
   - The navigation button says "Today" in day view and "This week" in week view, jumps accordingly, and is subtle / `aria-disabled` when the current day or week is already shown (also on the doctor's schedule).
   - Finished appointments (Done, Cancelled, No-show) are locked: the repository throws `locked_status` for any change of time, doctor, service or patient; the UI shows no grab cursor, no Edit action and a read-only note. Visit notes stay writable.
@@ -40,7 +40,7 @@
   - New status No-show (`no_show`, "لم يحضر"): Pending or Confirmed to No-show only once the end time has passed (`now >= end`, injectable clock), final, undo through the toast. Own icon (UserX), violet token pair, label in AR/EN, dashboard counter, panel action, notification and toast text. Reports: separate count, "no-show rate" KPI, donut slice and summary. Seed: a few past no-shows.
   - 159 unit tests.
 
-- **M3.1b doctor role + drag fix** (delivered, awaiting Team Leader review)
+- **M3.1b doctor role + drag fix** (approved)
   - Drag root cause: the route wrapper `.anim-route` kept `transform: matrix(1,0,0,1,0,0)` after its entry animation (`animation-fill-mode: both`), which made it the containing block of the `position: fixed` ghost, so the ghost was shifted by the sidebar width and top bar height. Fixed by rendering the ghost in a portal on `document.body`, and by `backwards` fill on `.anim-route` (guarded by `npm run check:motion`). Math is one viewport space in `lib/scheduling/drag.ts` (`resolveDrag`): ghost = pointer minus grab offset, column from the ghost's horizontal centre, time from the ghost's top edge.
   - Drag debug overlay (dev only): open the calendar with `?debug=drag` (`npm run dev`). It draws the pointer (red dot, must sit on the grabbed point of the ghost), the ghost top edge (magenta line) and the computed slot (green outline), plus a readout. It is absent from production builds. To remove it for good: delete `features/calendar/dragDebug.ts` and `DragDebugOverlay.tsx` and the two lines that use them in `CalendarGrid.tsx`.
   - Doctor: "My schedule" has Day / Week (default Week) with the same Today / This week rule; the shared `features/appointments/VisitActions.tsx` serves "My day" and the panel that opens from a schedule card (Patient arrived, Complete visit, Did not attend after the end time, visit note, read-only note for finished ones).
@@ -48,9 +48,18 @@
   - "Working day" in the average-per-working-day KPI means a day of the range with at least one not-cancelled appointment of that doctor.
   - Arabic spelling unified to "النهاردة".
 
+- **M4a Web hosting, README, repo hygiene** (delivered, awaiting Team Leader review)
+  - Static web build is host-agnostic (`base: './'`, hash routing); tested from the root, from a nested sub-path and from `file://`. `index.html` carries `noindex, nofollow`; `public/_headers` adds the same header plus long cache for hashed files and no-cache for the entry page (Cloudflare Pages / Netlify read it, other hosts ignore it).
+  - Recommended host: Cloudflare Pages with Direct Upload (root address, free unlimited static requests, `_headers`). Steps in `docs/DEPLOY.md`. **No account has been created; waiting for approval.**
+  - `npm run verify:dist` / `verify:electron` (`scripts/verify-dist.mjs`) and `npm run release:web`; `npm run check:docs` (README / docs relative links) is part of `npm run check`.
+  - `README.md` (English + short Arabic), version 1.0.0, `license: UNLICENSED` (portfolio review only).
+  - `?debug=drag` is development only: the overlay chunk and its strings are absent from the web and desktop builds (checked by `verify-dist`).
+  - `npm audit`: 0 vulnerabilities in production dependencies; 7 moderate ones in the dev-only lint chain (typescript-eslint / minimatch), not shipped. Left as is on purpose (the suggested fix touches the lint stack); re-check before M4b ships.
+  - Identity: app name "Nabd Clinic / نبض كلينك", page title "Nabd Clinic · Demo" (EN) or "نبض كلينك · عرض تجريبي" (AR), window title follows the page. The only mark in the repo is the fictional Nabd pulse mark (`public/favicon.svg`); the KHENOV logo is not in the repo and is needed from the user for the app icon (see the M4a report).
+
 ## Next
 
-- M4 Packaging: Electron builds, static web build, icon, README, portfolio pack. Waiting for the Team Leader's order.
+- M4b: Windows build with electron-builder (icon from the KHENOV asset), Portfolio Pack in docs/portfolio/. Then tag v1.0.0.
 
 ## Decisions
 
@@ -98,3 +107,4 @@ Add `?demo=fast` to the browser URL to disable simulated delays, `?demo=error` t
 
 - Seed is version 4 (M3.1a): past appointments now include no-shows, so stored demo data is re-seeded once (preferences are kept).
 - Repository error codes are lowercase snake case like the existing ones: `locked_status` is the LOCKED_STATUS error.
+- Release tag (after M4b is approved): `git tag -a v1.0.0 -m "Nabd Clinic demo 1.0.0"` then `git push origin v1.0.0`.
