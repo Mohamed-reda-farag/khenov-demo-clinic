@@ -1,0 +1,44 @@
+# Windows packaging for the Nabd Clinic DEMO. Free tooling only; nothing is code-signed.
+# Run `npm run dist:win` (see docs/BUILD-WINDOWS.md).
+appId: studio.khenov.demo.nabdclinic
+productName: Nabd Clinic
+copyright: Demo by KHENOV. All data is fictional.
+
+directories:
+  output: release
+  buildResources: build
+
+# Everything the app needs is already bundled into out/ by electron-vite (the renderer is bundled
+# by Vite and the main process uses no packages), so no node_modules go into the installer.
+files:
+  - out/**/*
+  - package.json
+  - '!**/node_modules/**'
+  - '!**/_headers' # only used by the web host
+
+# Keep only the languages the app has (English and Arabic).
+electronLanguages:
+  - en-US
+  - ar
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  # PLACEHOLDER: generated from the fictional Nabd pulse mark (public/favicon.svg).
+  # To swap it, replace build/icon.png (square, 1024 x 1024); electron-builder converts it to .ico.
+  icon: build/icon.png
+  # No certificate: skip signing only (the icon and version info are still written into the exe).
+  signExecutable: false
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: Nabd Clinic
+  artifactName: NabdClinic-Demo-${version}-Setup.${ext}
+
+portable:
+  artifactName: NabdClinic-Demo-${version}-Portable.${ext}

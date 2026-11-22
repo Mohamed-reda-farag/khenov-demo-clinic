@@ -27,6 +27,38 @@ for (const file of markdown) {
     }
   }
 }
+// The portfolio card: valid JSON, honest "Demo" label, both languages, and media names that the
+// guides in docs/portfolio actually talk about.
+const cardPath = join(root, 'docs', 'portfolio', 'card.json');
+if (existsSync(cardPath)) {
+  const guides = ['COVER.md', 'SCREENSHOTS.md', 'VIDEO.md']
+    .map((name) => readFileSync(join(root, 'docs', 'portfolio', name), 'utf8'))
+    .join('\n');
+  try {
+    const card = JSON.parse(readFileSync(cardPath, 'utf8'));
+    if (card.type !== 'Demo') errors.push('card.json: type must be "Demo"');
+    for (const key of ['title', 'summary', 'disclaimer']) {
+      if (!card[key]?.ar || !card[key]?.en) errors.push(`card.json: ${key} needs ar and en`);
+    }
+    if (!Array.isArray(card.tags) || card.tags.length < 3 || card.tags.length > 4) {
+      errors.push('card.json: 3 or 4 tags are expected');
+    }
+    for (const link of ['liveDemo', 'download']) {
+      if (!card.links?.[link]) errors.push(`card.json: links.${link} is missing`);
+    }
+    const media = [card.media?.cover, ...(card.media?.screenshots ?? []), card.media?.video];
+    for (const name of media) {
+      if (!name || !guides.includes(name))
+        errors.push(`card.json: media "${name}" is not in the guides`);
+    }
+    if (!/demo|عرض تجريبي/i.test(`${card.summary?.en} ${card.summary?.ar}`)) {
+      errors.push('card.json: the summary must say it is a demo');
+    }
+  } catch (error) {
+    errors.push(`card.json: ${error.message}`);
+  }
+}
+
 if (errors.length > 0) {
   console.error(errors.join('\n'));
   process.exit(1);

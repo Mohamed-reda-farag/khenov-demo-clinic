@@ -1,6 +1,16 @@
 import { join } from 'node:path';
 import { app, BrowserWindow, Menu, shell } from 'electron';
 
+/**
+ * Demo switches for the installed app, which has no address bar: start it with `--demo=fast`,
+ * `--demo=error`, `--demo=empty` (or a comma list such as `--demo=fast,error`). They reach the
+ * renderer as the same `?demo=` query the browser version reads.
+ */
+function demoQuery(): Record<string, string> | undefined {
+  const value = process.argv.find((arg) => arg.startsWith('--demo='))?.slice('--demo='.length);
+  return value && /^[a-z,]+$/.test(value) ? { demo: value } : undefined;
+}
+
 function createWindow(): void {
   const win = new BrowserWindow({
     width: 1360,
@@ -24,7 +34,8 @@ function createWindow(): void {
   if (devUrl) {
     void win.loadURL(devUrl);
   } else {
-    void win.loadFile(join(__dirname, '../renderer/index.html'));
+    const query = demoQuery();
+    void win.loadFile(join(__dirname, '../renderer/index.html'), query ? { query } : undefined);
   }
 }
 

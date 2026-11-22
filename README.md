@@ -49,6 +49,14 @@ Other commands:
 
 Hosting the static build is described in [docs/DEPLOY.md](docs/DEPLOY.md).
 
+## Windows app
+
+`npm run dist:win` builds a Windows installer (`NabdClinic-Demo-<version>-Setup.exe`) and a portable file (`...-Portable.exe`) with electron-builder. They are **not code-signed**, so Windows SmartScreen shows "Unknown publisher" the first time: choose _More info_, then _Run anyway_ (only for a file you got from the official link; compare its SHA-256 first). Steps, testing, the icon and the text to give downloaders are in [docs/BUILD-WINDOWS.md](docs/BUILD-WINDOWS.md). The installed app takes the same switches as a command-line argument, for example `--demo=fast`. The app icon is currently a **placeholder**.
+
+## Portfolio Pack
+
+Cover, screenshot list, 30-second video script, project summary and card data: [docs/portfolio/](docs/portfolio/README.md).
+
 ## Demo switches
 
 Add them to the address, **before** the `#`, for example `http://localhost:5173/?demo=fast#/calendar`. Combine with commas: `?demo=fast,error`.

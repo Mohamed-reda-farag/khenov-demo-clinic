@@ -1,0 +1,39 @@
+{
+  "slug": "nabd-clinic-desktop-demo",
+  "type": "Demo",
+  "platform": "desktop",
+  "title": {
+    "ar": "نبض كلينك: تطبيق سطح مكتب لإدارة العيادة",
+    "en": "Nabd Clinic: clinic management desktop app"
+  },
+  "summary": {
+    "ar": "تطبيق عيادة سطح مكتب هادي وعربي أولاً: تقويم بالسحب، وحجز من غير تعارض، وتقارير واضحة (عرض تجريبي ببيانات وهمية).",
+    "en": "A calm Arabic-first clinic management desktop app: drag-and-drop calendar, conflict-free booking and clear reports (demo, fictional data)."
+  },
+  "tags": [
+    { "ar": "تطبيق سطح مكتب", "en": "Desktop app" },
+    { "ar": "إدارة عيادة", "en": "Clinic management" },
+    { "ar": "واجهة عربية RTL", "en": "Arabic RTL" },
+    { "ar": "عرض UX", "en": "UX demo" }
+  ],
+  "disclaimer": {
+    "ar": "عرض تجريبي ببيانات وهمية بالكامل، وليس مشروع عميل.",
+    "en": "A demo with entirely fictional data, not a client project."
+  },
+  "links": {
+    "liveDemo": "<LIVE_DEMO_URL>",
+    "download": "<DOWNLOAD_URL>"
+  },
+  "media": {
+    "cover": "nabd-clinic-cover.webp",
+    "screenshots": [
+      "01-calendar-week-ar-light.webp",
+      "02-drag-reschedule-en-light.webp",
+      "03-booking-conflict-ar-light.webp",
+      "04-status-flow-noshow-en-dark.webp",
+      "05-doctor-my-day-ar-light.webp",
+      "06-reports-en-dark.webp"
+    ],
+    "video": "nabd-clinic-demo-30s.mp4"
+  }
+}

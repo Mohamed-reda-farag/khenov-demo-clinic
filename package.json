@@ -1,5 +1,6 @@
 {
   "name": "khenov-demo-clinic",
+  "productName": "Nabd Clinic",
   "version": "1.0.0",
   "private": true,
   "description": "Nabd Clinic - clinic management DEMO by KHENOV (desktop + web)",
@@ -22,7 +23,8 @@
     "verify:dist": "node scripts/verify-dist.mjs dist",
     "verify:electron": "node scripts/verify-dist.mjs out/renderer",
     "release:web": "npm run build:web && npm run verify:dist",
-    "check:docs": "node scripts/check-docs.mjs"
+    "check:docs": "node scripts/check-docs.mjs",
+    "dist:win": "npm run build:electron && npm run verify:electron && electron-builder --win --publish never"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
@@ -48,6 +50,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "electron": "^45.3.2",
+    "electron-builder": "^26.18.0",
     "electron-vite": "^6.0.0",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",

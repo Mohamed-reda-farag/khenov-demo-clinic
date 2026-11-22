@@ -57,9 +57,17 @@
   - `npm audit`: 0 vulnerabilities in production dependencies; 7 moderate ones in the dev-only lint chain (typescript-eslint / minimatch), not shipped. Left as is on purpose (the suggested fix touches the lint stack); re-check before M4b ships.
   - Identity: app name "Nabd Clinic / نبض كلينك", page title "Nabd Clinic · Demo" (EN) or "نبض كلينك · عرض تجريبي" (AR), window title follows the page. The only mark in the repo is the fictional Nabd pulse mark (`public/favicon.svg`); the KHENOV logo is not in the repo and is needed from the user for the app icon (see the M4a report).
 
+- **M4b Windows build + Portfolio Pack** (delivered, awaiting Team Leader review)
+  - `electron-builder` 26 is a **devDependency only** (packaging tool, not shipped; no runtime dependency added). Config in `electron-builder.yml`; `npm run dist:win` = `build:electron` + `verify:electron` + electron-builder. Targets: NSIS installer (per user, choose folder) and portable, x64, unsigned (`signExecutable: false`: signing skipped, icon and version info still written). Output goes to `release/` (git-ignored). English and Arabic locales only; no `node_modules` inside the app.
+  - The installed app has no address bar, so `electron/main.ts` turns a `--demo=fast|error|empty` argument into the same `?demo=` query. Packaged `app.asar` was smoke-tested in real Electron (file:// inside the asar, hash routing, lazy screens, flags).
+  - **App icon is a PLACEHOLDER**: `build/icon.png` rendered from the fictional Nabd pulse mark. To swap it: replace `build/icon.png` with the KHENOV mark (square 1024 x 1024 PNG) and rebuild; electron-builder produces the `.ico`.
+  - `package.json` now has `productName` ("Nabd Clinic"), which also names the user-data folder (`%APPDATA%\Nabd Clinic`).
+  - Portfolio Pack in `docs/portfolio/` (cover, 6 screenshots, 30 s video script, summary AR/EN, `card.json`). `check:docs` also validates `card.json`. Media files (`docs/portfolio/media/`) are not committed.
+  - Not done in the sandbox: the NSIS installer step (needs wine on Linux); it runs natively on Windows. The portable build (102 MB) and the unpacked app were built; the installer payload measured 73 MB.
+
 ## Next
 
-- M4b: Windows build with electron-builder (icon from the KHENOV asset), Portfolio Pack in docs/portfolio/. Then tag v1.0.0.
+- After M4b approval: tag v1.0.0, deploy the three demos together (hosting account not created yet), swap the placeholder icon for the KHENOV mark, produce the real screenshots and video.
 
 ## Decisions
 
